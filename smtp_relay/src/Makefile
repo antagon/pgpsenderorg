@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -std=c99 -pedantic -ggdb -Wall -D_GNU_SOURCE
 
-NAME = smtpd
+NAME = smtp_relay
 
 all: $(NAME)
 
