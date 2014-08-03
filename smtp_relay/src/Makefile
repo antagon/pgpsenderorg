@@ -7,7 +7,7 @@ include ../../Makefile.conf
 CC = gcc
 CFLAGS = -std=c99 -pedantic -ggdb -Wall -D_GNU_SOURCE
 
-NAME = smtp_relay
+NAME = $(SMTP_RELAY_FILE)
 
 all: $(NAME)
 

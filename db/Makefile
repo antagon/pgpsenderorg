@@ -4,16 +4,14 @@
 
 include ../Makefile.conf
 
-OUTPUT=pgpsenderorg.db
-
 all: alias.sql user.sql email.sql
-	sqlite3 $(OUTPUT) < alias.sql
-	sqlite3 $(OUTPUT) < user.sql
-	sqlite3 $(OUTPUT) < email.sql
+	sqlite3 $(SQLITE3_DB_FILE) < alias.sql
+	sqlite3 $(SQLITE3_DB_FILE) < user.sql
+	sqlite3 $(SQLITE3_DB_FILE) < email.sql
 
 install:
 
 
 clean:
-	rm -f $(OUTPUT)
+	rm -f $(SQLITE3_DB_FILE)
 
