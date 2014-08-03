@@ -7,7 +7,7 @@ include ../Makefile.conf
 all:
 	$(MAKE) -C include/
 
-install: include/config.php
+install:
 	rsync -r --exclude "*.in" --exclude "Makefile" ./* $(INSTALL_WWW_PATH)
 
 clean:

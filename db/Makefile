@@ -10,7 +10,7 @@ all: alias.sql user.sql email.sql
 	sqlite3 $(SQLITE3_DB_FILE) < email.sql
 
 install:
-
+	install -m 664 $(SQLITE3_DB_FILE) $(INSTALL_DB_PATH)
 
 clean:
 	rm -f $(SQLITE3_DB_FILE)
