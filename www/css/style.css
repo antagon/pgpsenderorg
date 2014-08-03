@@ -12,7 +12,7 @@
 	margin:0 auto;
 	padding:5px 10px 35px 10px;
 	background-color:#FFF/*#f6f6ef*/;
-	width:80%;
+	width:65%;
 }
 
 #lang_switcher {
@@ -26,9 +26,9 @@
 	margin:0 auto;
 	margin-top:0px;
 	font-size:12px;
-	padding:3px 10px 3px 10px;
+	padding:10px;
 	border-top:2px solid #BBBBBB;
-	width:80%;
+	width:65%;
 }
 
 #bitcoin_address_box {
@@ -54,6 +54,7 @@ h1 {
 	margin-bottom:5px;
 	font-size:26px;
 	font-family:Helvetica;
+	color:#2D6FAC;
 }
 h2 { margin-top:0px; margin-bottom:10px; font-size:18px; font-family:Monda; }
 h3 { margin-top:0px; margin-bottom:3px; font-size:16px; font-family:Monda; }
@@ -115,7 +116,7 @@ pre {
 }
 noscript {
 	font-weight:bold;
-	width:80%;
+	width:65%;
 	color:#F73131;
 }
 label { cursor:pointer; }
