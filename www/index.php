@@ -1,39 +1,39 @@
-<?php
-/*
- * Copyright (c) 2013, PGPSender.org
- */
-
-require_once ("detect_language.php");
-?>
 <!DOCTYPE html>
 <html>
 	<head>
-	<title>Contact - PGPSender</title>
+	<title>PGPSender</title>
 <?php
-	require_once ("head.php");
+	require_once ("include/head.php");
 ?>
 	</head>
 	<body>
 		<div id="content">
 			<div id="lang_switcher">
-				&nbsp;
+<?php
+	require_once ("include/top_menu.php");
+?>
 			</div>
 			
-			<h1> <a href="./">PGPSender</a> </h1>
-			<div id="quote">"Privacy is not something that I am merely entitled to, it's an absolute prerequisite."</div>
-			
-			<h2>Welcome</h2>
-			
-			<ul>
-				<li><strong>Email:</strong> <a href="/?to=info@pgpsender.org">info@pgpsender.org</a> </li>
-				<li><strong>Twitter:</strong> <a href="https://twitter.com/PGPSender">@PGPSender</a> </li>
-			</ul>
+			<h1> PGPSender </h1>
+			<div id="quote">
+<?php
+	require_once ("include/quote.php");
+?>
+			</div>
+
+			<h2>Welcome netizen</h2>
+
+			<h3>This is a h3!!!</h3>
+
+			</div>
+
 		</div>
 		
 		<div id="footer">
 <?php
-	require_once ("footer.php");
+	require_once ("include/footer.php");
 ?>
 		</div>
 	</body>
 </html>
+
