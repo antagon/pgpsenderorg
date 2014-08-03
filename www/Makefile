@@ -4,10 +4,14 @@
 
 include ../Makefile.conf
 
-all:
+all: include/config.php
 
-install:
-	rsync -r --exclude "Makefile" ./* $(INSTALL_WWW_PATH)
+install: include/config.php
+	rsync -r --exclude "*.in" --exclude "Makefile" ./* $(INSTALL_WWW_PATH)
+
+include/config.php: include/config.php.in
+	sed 's|@SQLITE3_DB_FILE@|$(INSTALL_DB_PATH)/$(SQLITE3_DB_FILE)|g' include/config.php.in > include/config.php
 
 clean:
+	rm -f include/config.php
 

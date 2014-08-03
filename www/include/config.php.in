@@ -1,0 +1,9 @@
+<?php
+
+class Config
+{
+	const SQLITE3_DB_FILE = "@SQLITE3_DB_FILE@";
+};
+
+?>
+
