@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2014, PGPSender.org
+# 
+
+include ../../Makefile.conf
+
 CC = gcc
 CFLAGS = -std=c99 -pedantic -ggdb -Wall -D_GNU_SOURCE
 

@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2014, PGPSender.org
+# 
+
 all:
 	$(MAKE) -C db/
 	$(MAKE) -C smtp_relay/
@@ -11,4 +15,5 @@ install:
 clean:
 	$(MAKE) -C db/ clean
 	$(MAKE) -C smtp_relay/ clean
+	$(MAKE) -C www/ clean
 

@@ -1,3 +1,7 @@
+#
+# Copyright (c) 2014, PGPSender.org
+# 
+
 all:
 	$(MAKE) -C src/
 

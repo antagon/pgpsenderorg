@@ -1,3 +1,9 @@
+#
+# Copyright (c) 2014, PGPSender.org
+# 
+
+include ../Makefile.conf
+
 OUTPUT=pgpsenderorg.db
 
 all: alias.sql user.sql email.sql
