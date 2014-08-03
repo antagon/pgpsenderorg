@@ -6,6 +6,7 @@
 enum
 {
 	SMTP_E_OK = 0x00,
+	SMTP_E_CONTINUE = 0x01,
 	SMTP_E_UNKNWN
 };
 
