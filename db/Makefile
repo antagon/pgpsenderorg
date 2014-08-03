@@ -5,6 +5,9 @@ all: alias.sql user.sql email.sql
 	sqlite3 $(OUTPUT) < user.sql
 	sqlite3 $(OUTPUT) < email.sql
 
+install:
+
+
 clean:
 	rm -f $(OUTPUT)
 

@@ -5,6 +5,9 @@ NAME = smtp_relay
 
 all: $(NAME)
 
+install:
+
+
 clean:
 	rm -f $(NAME) *.o
 
