@@ -1,0 +1,24 @@
+PGPSender.org Installation
+Copyright (c) 2014, PGPSender.org
+
+0. Licensing
+
+See COPYING.
+
+1. Requirements
+
+For information about requirements and dependencies please see INSTALL file
+of individual parts of the system.
+
+2. Configuration
+
+See Makefile.conf for configuration options.
+
+3. Installation
+
+Run 'make && make install'.
+
+4. Authors
+
+All contributors to this software are listed in AUTHORS.
+
