@@ -7,8 +7,10 @@ function PGPSender ()
 		});
 	};
 
-	this.user_login = function ()
+	this.user_login = function (username, password, callback)
 	{
-		// TODO...
+		$.post ("/api/user_login.php", "username="+username+"&password="+password, function (data){
+			callback (data);
+		});
 	};
 };

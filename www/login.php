@@ -14,20 +14,25 @@
 ?>
 			</div>
 			
-			<h1> <a href="./">PGPSender</a> </h1>
+			<h1> <a href="/">PGPSender</a> </h1>
 			<div id="quote">
 <?php
 	require_once ("include/quote.php");
 ?>
 			</div>
 
+<?php
+	require_once ("include/alert.php");
+?>
+
 			<fieldset>
 				<legend>Login</legend>
 
 				<input type="text" name="username" placeholder="Username">
 				<input type="password" name="password" placeholder="Password">
-
 				<button name="submit">Submit</button>
+
+				<div style="margin:5px; font-size:85%;"> <a href="#">Forgotten password</a> </div>
 			</fieldset>
 
 		</div>
