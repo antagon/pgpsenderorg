@@ -14,12 +14,16 @@
 ?>
 			</div>
 			
-			<h1> <a href="./">PGPSender</a> </h1>
+			<h1> <a href="/">PGPSender</a> </h1>
 			<div id="quote">
 <?php
 	require_once ("include/quote.php");
 ?>
 			</div>
+
+<?php
+	require_once ("include/alert.php");
+?>
 
 			<fieldset>
 				<legend>Register</legend>

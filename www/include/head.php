@@ -7,3 +7,5 @@
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/openpgp.min.js"></script>
 <script type="text/javascript" src="js/pgpsender_api.js"></script>
+<script type="text/javascript" src="js/alert.js"></script>
+

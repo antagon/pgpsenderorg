@@ -1,14 +1,14 @@
 function PGPSender ()
 {
-	this.user_register = function (username, password)
+	this.user_register = function (username, password, callback)
 	{
-		$.post ("/api/user_register.php", "username="+username+"&password="+password, function (){
-			alert ("submitted");
+		$.post ("/api/user_register.php", "username="+username+"&password="+password, function (data){
+			callback (data);
 		});
 	};
 
 	this.user_login = function ()
 	{
-		
+		// TODO...
 	};
 };
