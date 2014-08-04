@@ -172,6 +172,20 @@ noscript {
 
 label { cursor:pointer; }
 
+.alert {
+	margin-bottom:20px;
+	padding:5px;
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.alert-error { color:#F73131; }
+.alert-info { color:blue; }
+.alert-success { color:green; }
+
 .delim { margin-left:4px; margin-right:4px; }
 .error { color:#F73131; font-size:14px; }
 .notice { color:#2D6FAC; font-size:14px; }
