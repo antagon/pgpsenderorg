@@ -79,21 +79,7 @@ class User
 
 		return ($data === false)? false:true;
 	}
-	
-	public function pull ($limit)
-	{
-		$sql = "SELECT rowid, recipient, sender, subject, message FROM ".$this::TABLE." LIMIT ".intval ($limit).";";
-		$res = $this->db->query ($sql);
-		
-		if ( $res === false )
-			return false;
-		
-		$rows = array ();
-		while ( ($row = $res->fetchArray (SQLITE3_ASSOC) ) )
-			$rows[] = $row;
-		
-		return $rows;
-	}
 };
 
 ?>
+
