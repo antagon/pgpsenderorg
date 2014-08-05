@@ -29,8 +29,6 @@
 
 			<p>TODO</p>
 
-			</div>
-
 		</div>
 		
 		<div id="footer">
