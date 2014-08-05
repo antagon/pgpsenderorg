@@ -8,7 +8,7 @@ all:
 	$(MAKE) -C include/
 
 install:
-	rsync -r --exclude "*.in" --exclude "Makefile" ./* $(INSTALL_WWW_PATH)
+	rsync -r --exclude "*.in" --exclude "COPYING" --exclude "Makefile" ./* $(INSTALL_WWW_PATH)
 
 clean:
 	$(MAKE) -C include/ clean
