@@ -111,7 +111,7 @@ input[type=checkbox] {
 	vertical-align:top;
 }
 
-button {
+button, select {
 	padding:2px;
 	margin:5px;
 	font-size:85%;
@@ -146,11 +146,13 @@ fieldset {
 	-webkit-border-radius: 4px;
 	-khtml-border-radius: 4px;
 	border-radius: 4px;
+	margin-bottom:20px;
 }
 
 legend {
 	padding-left:10px;
 	padding-right:10px;
+	font-weight:bold;
 }
 
 pre {
@@ -162,6 +164,18 @@ pre {
 	white-space: -pre-wrap;      /* Opera 4-6 */
 	white-space: -o-pre-wrap;    /* Opera 7 */
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+table {
+	width:100%;
+	table-layout:fixed;
+}
+
+td {
+	/*border-bottom:1px solid #B2B2B2;*/
+	padding:2px;
+	margin:0px;
+	word-wrap:break-word;
 }
 
 noscript {
@@ -189,6 +203,14 @@ label { cursor:pointer; }
 .delim { margin-left:4px; margin-right:4px; }
 .hidden { display:none; }
 .bold { font-weight:bold; }
+
+.text-center {
+	text-align:center;
+}
+
+.text-right {
+	text-align:right;
+}
 
 .modal_heading {
 	width:50%;
