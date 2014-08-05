@@ -11,11 +11,8 @@ NAME = $(SMTP_RELAY_FILE)
 
 all: $(NAME)
 
-install:
-
-
-clean:
-	rm -f $(NAME) *.o
+install: $(NAME)
+	install -m 755 $(NAME) $(INSTALL_RELAY_PATH)
 
 $(NAME): main.o smtpd.o smtp.o
 	$(CC) $(CFLAGS) $^ -o $(NAME)
@@ -28,4 +25,7 @@ smtpd.o: smtpd.c smtpd.h
 
 smtp.o: smtp.c smtp.h
 	$(CC) $(CFLAGS) -c $<
+
+clean:
+	rm -f $(NAME) *.o
 
