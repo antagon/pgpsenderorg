@@ -1,5 +1,7 @@
 <?php
 
+session_start ();
+
 require_once ("../include/ApiResponse.class.php");
 require_once ("../include/Config.class.php");
 require_once ("../include/User.class.php");
@@ -12,8 +14,13 @@ if ( ! isset ($_POST["password"]) || empty ($_POST["password"]) )
 
 $user_db = new User (Config::SQLITE3_DB_FILE);
 
-if ( ! $user_db->authenticate ($_POST["username"], $_POST["password"]) )
+$user_data = $user_db->authenticate ($_POST["username"], $_POST["password"]);
+
+if ( $user_data === false )
 	ApiResponse::json_exit (ApiResponse::E_EXISTS, "Authentication failed");
+
+$_SESSION["user"] = $user_data;
 
 ApiResponse::json_exit (ApiResponse::E_OK);
 ?>
+
