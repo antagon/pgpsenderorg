@@ -56,7 +56,7 @@ class User
 
 	public function authenticate ($username, $password)
 	{
-		$sql = "SELECT * FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
+		$sql = "SELECT id, name, created FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
 
 		$res = $this->db->query ($sql);
 
