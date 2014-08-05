@@ -5,6 +5,8 @@ class ApiResponse
 	const E_OK = 0;
 	const E_EMPTY = 1;
 	const E_EXISTS = 2;
+	const E_INTERNAL = 3;
+	const E_UNAUTHORIZED = 4;
 
 	public static function json_exit ($status, $message = "")
 	{

@@ -15,7 +15,8 @@ $user_db = new User (Config::SQLITE3_DB_FILE);
 if ( $user_db->exists ($_POST["username"]) )
 	ApiResponse::json_exit (ApiResponse::E_EXISTS, "Username already exists");
 
-$user_db->create ($_POST["username"], $_POST["password"]);
+if ( ! $user_db->create ($_POST["username"], $_POST["password"]) )
+	ApiResponse::json_exit (ApiResponse::E_INTERNAL);
 
 ApiResponse::json_exit (ApiResponse::E_OK);
 ?>
