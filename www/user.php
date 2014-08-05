@@ -39,8 +39,18 @@ if ( ! isset ($_SESSION["user"]) )
 
 				<table>
 					<tbody>
-						<tr> <td>foo@example.org</td> <td class="text-right"> <button disabled="disabled">Primary</button> </td> </tr>
-						<tr> <td>blablah@example.org</td> <td class="text-right"> <button>Set primary</button> </td> </tr>
+						<tr>
+							<td>foo@example.org</td>
+							<td class="text-right">
+								<button disabled="disabled">Primary</button> <button>GPG key</button>
+							</td>
+						</tr>
+						<tr>
+							<td>blablah@example.org</td>
+							<td class="text-right">
+								<button>Set primary</button> <button>GPG key</button>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 			</fieldset>
@@ -85,17 +95,19 @@ if ( ! isset ($_SESSION["user"]) )
 			<fieldset>
 				<legend>Change password</legend>
 
-				<input type="password" name="password" placeholder="Password">
-				<input type="password" name="password_confirm" placeholder="Confirm password">
+				<div id="alert_passwd" class="alert hidden"></div>
 
-				<button name="submit">Submit</button>
+				<input type="password" name="passwd_password" placeholder="Password">
+				<input type="password" name="passwd_password_new" placeholder="New password">
+
+				<button name="passwd_submit">Submit</button>
 			</fieldset>
 
 			<fieldset>
 				<legend>Delete account</legend>
 
 				<p class="alert-error">
-					Upon deleting your account all data associated with the account will be deleted from our database!<br>
+					Upon deleting your account, all data associated with the account will be deleted from our database!<br>
 					As this operation cannot be reversed, please confirm your decision by providing your password.
 				</p>
 
@@ -111,6 +123,10 @@ if ( ! isset ($_SESSION["user"]) )
 	require_once ("include/footer.php");
 ?>
 		</div>
+
+		<input type="hidden" name="username" value="<?php echo htmlspecialchars ($_SESSION["user"]["name"], ENT_QUOTES | ENT_HTML5); ?>">
+
+		<script type="text/javascript" src="js/user.js"></script>
 	</body>
 </html>
 
