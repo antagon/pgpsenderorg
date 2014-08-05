@@ -142,10 +142,10 @@ textarea {
 
 fieldset {
 	border:1px solid #B2B2B2;
-	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	border-radius: 4px;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	-khtml-border-radius:4px;
+	border-radius:4px;
 	margin-bottom:20px;
 }
 
@@ -187,7 +187,7 @@ noscript {
 label { cursor:pointer; }
 
 .alert {
-	margin-bottom:20px;
+	margin-bottom:10px;
 	padding:5px;
 	white-space: pre-wrap;       /* css-3 */
 	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */

@@ -1,4 +1,4 @@
-function show_alert (type, message)
+function show_alert (id, type, message)
 {
 	var alert_class = null;
 
@@ -20,15 +20,15 @@ function show_alert (type, message)
 			break;
 	}
 
-	$("#alert").text (message);
-	$("#alert").addClass (alert_class);
-	$("#alert").show ();
+	$("#"+id).text (message);
+	$("#"+id).addClass (alert_class);
+	$("#"+id).show ();
 }
 
-function hide_alert ()
+function hide_alert (id)
 {
-	$("#alert").hide ();
-	$("#alert").removeClass ("alert-error alert-info alert-success");
-	$("#alert").text ("");
+	$("#"+id).hide ();
+	$("#"+id).removeClass ("alert-error alert-info alert-success");
+	$("#"+id).text ("");
 }
 

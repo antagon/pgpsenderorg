@@ -6,7 +6,7 @@ function login_submit ()
 
 		if ( data.status != 0 ){
 			$("[name=password]").val ("");
-			show_alert ("error", data.message+".");
+			show_alert ("alert", "error", data.message+".");
 			return;
 		}
 

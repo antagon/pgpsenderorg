@@ -30,12 +30,10 @@ if ( isset ($_SESSION["user"]) )
 ?>
 			</div>
 
-<?php
-	require_once ("include/alert.php");
-?>
-
 			<fieldset>
 				<legend>Login</legend>
+
+				<div id="alert" class="alert hidden"></div>
 
 				<input type="text" name="username" placeholder="Username">
 				<input type="password" name="password" placeholder="Password">
