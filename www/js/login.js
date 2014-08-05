@@ -2,8 +2,7 @@ function login_submit ()
 {
 	var pgpsender = new PGPSender ();
 
-	pgpsender.user_login ($("[name=username]").val (), $("[name=password]").val (), function (response){
-		var data = $.parseJSON (response);
+	pgpsender.user_login ($("[name=username]").val (), $("[name=password]").val (), function (data){
 
 		if ( data.status != 0 ){
 			$("[name=password]").val ("");

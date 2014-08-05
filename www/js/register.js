@@ -15,8 +15,7 @@ function register_submit ()
 		return;
 	}
 
-	pgpsender.user_register (username, password, function (response){
-		var data = $.parseJSON (response);
+	pgpsender.user_register (username, password, function (data){
 
 		if ( data.status != 0 ){
 			show_alert ("error", data.message+".");
