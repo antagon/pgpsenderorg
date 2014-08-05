@@ -4,9 +4,10 @@ function change_password_submit ()
 
 	pgpsender.user_passwd ($("[name=username]").val (), $("[name=passwd_password]").val (), $("[name=passwd_password_new]").val (), function (data){
 
+		$("[name=passwd_password]").val ("");
+		$("[name=passwd_password_new]").val ("");
+
 		if ( data.status != 0 ){
-			$("[name=passwd_password]").val ("");
-			$("[name=passwd_password_new]").val ("");
 			show_alert ("alert_passwd", "error", data.message+".");
 			return;
 		}
