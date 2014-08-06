@@ -32,14 +32,34 @@ class User
 
 	private function hash_password ($password)
 	{
-		return hash ("sha1", $password);
+		return sha1 ($password);
+	}
+
+	private function read_dev_urandom ()
+	{
+		$fd = fopen ("/dev/urandom", "rb");
+
+		if ( $fd === false )
+			return false;
+
+		$data = fread ($fd, 64);
+
+		fclose ($fd);
+
+		return bin2hex ($data);
 	}
 
 	public function create ($username, $password)
 	{
-		$sql = "INSERT INTO ".$this::TABLE." (name, password) VALUES (
+		$api_key = $this->read_dev_urandom ();
+
+		if ( $api_key === false )
+			return false;
+
+		$sql = "INSERT INTO ".$this::TABLE." (name, password, api_key) VALUES (
 						'".$this->db->escapeString ($username)."',
-						'".$this->hash_password ($password)."'
+						'".$this->hash_password ($password)."',
+						'".$api_key."'
 		);";
 
 		return $this->db->exec ($sql);
@@ -56,7 +76,19 @@ class User
 
 	public function authenticate ($username, $password)
 	{
-		$sql = "SELECT id, name, created FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
+		$sql = "SELECT id, name, api_key, created FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
+
+		$res = $this->db->query ($sql);
+
+		if ( $res === false )
+			return false;
+
+		return $res->fetchArray (SQLITE3_ASSOC);
+	}
+
+	public function authenticate_key ($api_key)
+	{
+		$sql = "SELECT id, name, api_key, created FROM ".$this::TABLE." WHERE api_key = '".$this->db->escapeString ($api_key)."'";
 
 		$res = $this->db->query ($sql);
 

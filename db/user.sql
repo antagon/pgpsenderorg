@@ -3,6 +3,7 @@ create table if not exists user (
 	name varchar (32) unique not null,
 	password varchar (60) not null,
 	primary_email_id integer,
+	api_key varchar (64) unique not null,
 	created timestamp default CURRENT_TIMESTAMP
 );
 
