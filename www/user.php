@@ -31,10 +31,10 @@ if ( ! isset ($_SESSION["user"]) )
 			</div>
 
 			<fieldset>
-				<legend>Emails</legend>
+				<legend>Addresses</legend>
 
 				<div>
-					<button>Add email</button>
+					<button>Add address</button>
 				</div>
 
 				<table>
@@ -124,7 +124,7 @@ if ( ! isset ($_SESSION["user"]) )
 ?>
 		</div>
 
-		<input type="hidden" name="username" value="<?php echo htmlspecialchars ($_SESSION["user"]["name"], ENT_QUOTES | ENT_HTML5); ?>">
+		<input type="hidden" name="api_key" value="<?php echo $_SESSION["user"]["api_key"]; ?>">
 
 		<script type="text/javascript" src="js/user.js"></script>
 	</body>

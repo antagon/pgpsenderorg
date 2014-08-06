@@ -2,7 +2,7 @@ function change_password_submit ()
 {
 	var pgpsender = new PGPSender ();
 
-	pgpsender.user_passwd ($("[name=username]").val (), $("[name=passwd_password]").val (), $("[name=passwd_password_new]").val (), function (data){
+	pgpsender.user_passwd ($("[name=api_key]").val (), $("[name=passwd_password]").val (), $("[name=passwd_password_new]").val (), function (data){
 
 		$("[name=passwd_password]").val ("");
 		$("[name=passwd_password_new]").val ("");

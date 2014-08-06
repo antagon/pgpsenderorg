@@ -32,9 +32,9 @@ function PGPSender ()
 		});
 	};
 
-	this.user_passwd = function (username, password, password_new, callback)
+	this.user_passwd = function (api_key, password, password_new, callback)
 	{
-		$.post ("/api/user_passwd.php", "username="+username+"&password="+password+"&password_new="+password_new, function (response){
+		$.post ("/api/user_passwd.php", "api_key="+api_key+"&password="+password+"&password_new="+password_new, function (response){
 			var data = null;
 
 			try {
