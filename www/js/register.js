@@ -7,11 +7,14 @@ function register_submit ()
 
 	if ( password != password_confirm ){
 		show_alert ("alert", "error", "Passwords do not match.");
+		$("[name=password_confirm]").val ("");
 		return;
 	}
 
 	if ( password.length < 8 ){
 		show_alert ("alert", "error", "Password is too short, use at least 8 characters.");
+		$("[name=password]").val ("");
+		$("[name=password_confirm]").val ("");
 		return;
 	}
 
@@ -19,6 +22,8 @@ function register_submit ()
 
 		if ( data.status != 0 ){
 			show_alert ("alert", "error", data.message+".");
+			$("[name=password]").val ("");
+			$("[name=password_confirm]").val ("");
 			return;
 		}
 
