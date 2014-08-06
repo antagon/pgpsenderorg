@@ -20,6 +20,8 @@ function show_alert (id, type, message)
 			break;
 	}
 
+	$("#"+id).removeClass ("alert-error alert-info alert-success");
+
 	$("#"+id).text (message);
 	$("#"+id).addClass (alert_class);
 	$("#"+id).show ();
