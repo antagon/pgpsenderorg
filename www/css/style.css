@@ -1,6 +1,9 @@
 @font-face {
 	font-family:ProximaNovaRegular;
-	src: url("./ProximaNova-Regular.otf") format("opentype");
+	src: url("./ProximaNova-Regular.eot?#iefix") format("embedded-opentype"),
+		 url("./ProximaNova-Regular.woff") format("woff"), 
+		 url("./ProximaNova-Regular.ttf")  format("truetype"),
+		 url("./ProximaNova-Regular.svg#svgFontName") format("svg");
 }
 
 #message {
