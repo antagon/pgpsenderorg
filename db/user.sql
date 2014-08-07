@@ -1,3 +1,7 @@
+--
+-- Copyright (c) 2014, PGPSender.org
+--
+
 create table if not exists user (
 	id integer primary key autoincrement,
 	name varchar (32) unique not null,
