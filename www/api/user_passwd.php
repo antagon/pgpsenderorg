@@ -5,7 +5,7 @@ require_once ("../include/Config.class.php");
 require_once ("../include/User.class.php");
 
 if ( ! isset ($_POST["api_key"]) || empty ($_POST["api_key"]) )
-	ApiResponse::json_exit (ApiResponse::E_EMPTY, "Username is empty");
+	ApiResponse::json_exit (ApiResponse::E_EMPTY, "API key is empty");
 
 if ( ! isset ($_POST["password"]) || empty ($_POST["password"]) )
 	ApiResponse::json_exit (ApiResponse::E_EMPTY, "Password is empty");
