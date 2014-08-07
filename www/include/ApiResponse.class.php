@@ -13,6 +13,11 @@ class ApiResponse
 		echo json_encode (array ("status" => $status, "message" => $message));
 		exit (0);
 	}
+
+	public static function json_exit_data ($status, $data = array ())
+	{
+		echo json_encode (array ("status" => $status, "data" => $data));
+	}
 };
 
 ?>
