@@ -62,9 +62,9 @@ class Email
 		return $rows;
 	}
 
-	public function remove ($address)
+	public function delete ($address)
 	{
-		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($address)."' AND user_id = ".intval ($user_id).";";
+		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($address)."';";
 
 		return $this->db->exec ($sql);
 	}
