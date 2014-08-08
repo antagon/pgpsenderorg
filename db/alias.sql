@@ -4,9 +4,9 @@
 
 create table if not exists alias (
 	id integer primary key autoincrement,
-	name varchar (254) not null,
-	email_id integer not null,
+	name varchar (254) unique not null,
+	email_id integer,
 	user_id integer not null,
-	created timestamp not null
+	created timestamp default CURRENT_TIMESTAMP
 );
 
