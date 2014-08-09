@@ -34,23 +34,18 @@ if ( ! isset ($_SESSION["user"]) )
 				<legend>Addresses</legend>
 
 				<div>
-					<button>Add address</button>
+					<button name="btn_address_new">Add address</button>
 				</div>
 
-				<table>
+				<div id="alert_address_new" class="alert hidden"></div>
+
+				<div id="address_new" class="hidden">
+					<input type="text" name="in_address_new" placeholder="New address"> <button name="btn_address_new_submit">Submit</button>
+				</div>
+
+				<table id="address_table">
 					<tbody>
-						<tr>
-							<td>foo@example.org</td>
-							<td class="text-right">
-								<button disabled="disabled">Primary</button> <button>GPG key</button>
-							</td>
-						</tr>
-						<tr>
-							<td>blablah@example.org</td>
-							<td class="text-right">
-								<button>Set primary</button> <button>GPG key</button>
-							</td>
-						</tr>
+						<tr> <td class="text-center">No addresses are available.</td> </tr>
 					</tbody>
 				</table>
 			</fieldset>
@@ -59,35 +54,16 @@ if ( ! isset ($_SESSION["user"]) )
 				<legend>Aliases</legend>
 
 				<div>
-					<button>Add alias</button>
+					<button name="btn_alias_new">Add alias</button>
 				</div>
 
-				<table>
+				<div id="alias_new" class="hidden">
+					<input type="text" name="in_alias_new" placeholder="New alias"> <span>@pgpsender.org</span> <button name="btn_alias_new_submit">Submit</button>
+				</div>
+
+				<table id="alias_table">
 					<tbody>
-						<tr>
-							<td>b88d40f311aa0591170a82e9147d3d9c@pgpsender.org</td>
-							<td class="text-right">
-								<select>
-									<option value="null">unassigned</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>2be852db88abf04941728fa41cf197ff@pgpsender.org</td>
-							<td class="text-right">
-								<select>
-									<option value="null">unassigned</option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>3fe7c4bd69d4b53cffe0a9dbe1db6027@pgpsender.org</td>
-							<td class="text-right">
-								<select>
-									<option value="null">unassigned</option>
-								</select>
-							</td>
-						</tr>
+						<tr> <td class="text-center">No aliases are available.</td> </tr>
 					</tbody>
 				</table>
 			</fieldset>
