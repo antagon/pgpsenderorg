@@ -26,10 +26,10 @@ class Alias
 	{
 		$email_id = ($email_id == null)? null:intval ($email_id);
 
-		$sql = "INSERT INTO ".$this::TABLE." (name, user_id) VALUES (
+		$sql = "INSERT INTO ".$this::TABLE." (name, user_id, email_id) VALUES (
 						'".$this->db->escapeString ($alias)."',
 						".intval ($user_id).",
-						".$email_id."
+						NULL
 		);";
 
 		return $this->db->exec ($sql);
@@ -49,9 +49,23 @@ class Alias
 		return ($data === false)? false:true;
 	}
 
-public function get_for_uid ($user_id)
+	public function owns ($alias, $user_id)
 	{
-		$sql = "SELECT id, name, created FROM ".$this::TABLE." WHERE user_id = '".intval ($user_id)."';";
+		$sql = "SELECT id FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."' AND user_id = ".intval ($user_id).";";
+
+		$res = $this->db->query ($sql);
+
+		if ( $res === false )
+			return false;
+
+		$data = $res->fetchArray (SQLITE3_NUM);
+
+		return ($data === false)? false:true;
+	}
+
+	public function get_for_uid ($user_id)
+	{
+		$sql = "SELECT id, name, email_id, created FROM ".$this::TABLE." WHERE user_id = ".intval ($user_id).";";
 
 		$res = $this->db->query ($sql);
 
@@ -66,9 +80,9 @@ public function get_for_uid ($user_id)
 		return $rows;
 	}
 
-	public function delete ($alias)
+	public function delete ($alias, $user_id)
 	{
-		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."';";
+		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."' AND user_id = ".intval ($user_id).";";
 
 		return $this->db->exec ($sql);
 	}
