@@ -76,7 +76,7 @@ class User
 
 	public function authenticate ($username, $password)
 	{
-		$sql = "SELECT id, name, api_key, created FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
+		$sql = "SELECT id, name, api_key, primary_email_id, created FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($username)."' AND password = '".$this->hash_password ($password)."'";
 
 		$res = $this->db->query ($sql);
 
@@ -88,7 +88,7 @@ class User
 
 	public function authenticate_key ($api_key)
 	{
-		$sql = "SELECT id, name, api_key, created FROM ".$this::TABLE." WHERE api_key = '".$this->db->escapeString ($api_key)."'";
+		$sql = "SELECT id, name, api_key, primary_email_id, created FROM ".$this::TABLE." WHERE api_key = '".$this->db->escapeString ($api_key)."'";
 
 		$res = $this->db->query ($sql);
 
