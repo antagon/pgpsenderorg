@@ -47,4 +47,85 @@ function PGPSender ()
 			callback (data);
 		});
 	};
+
+	this.email_get = function (api_key, callback)
+	{
+		$.post ("/api/email_get.php", "api_key="+api_key, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
+	this.alias_get = function (api_key, callback)
+	{
+		$.post ("/api/alias_get.php", "api_key="+api_key, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
+	this.email_add = function (api_key, address, callback)
+	{
+		$.post ("/api/email_add.php", "api_key="+api_key+"&address="+address, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
+	this.alias_add = function (api_key, alias, hostname, callback)
+	{
+		$.post ("/api/alias_add.php", "api_key="+api_key+"&alias="+alias+"&hostname="+hostname, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
+	this.alias_delete = function (api_key, alias, callback)
+	{
+		$.post ("/api/alias_delete.php", "api_key="+api_key+"&alias="+alias, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
 };
+
