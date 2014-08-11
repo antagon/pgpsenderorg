@@ -34,10 +34,12 @@ if ( isset ($_SESSION["user"]) )
 				<legend>Login</legend>
 
 				<div id="alert" class="alert hidden"></div>
-
-				<input type="text" name="username" placeholder="Username">
-				<input type="password" name="password" placeholder="Password">
-				<button name="submit">Submit</button>
+				
+				<form onsubmit="return false;">
+					<input type="text" name="username" placeholder="Username">
+					<input type="password" name="password" placeholder="Password">
+					<button name="submit">Submit</button>
+				</form>
 
 				<div style="margin:5px; font-size:85%;"> <a href="#">Forgotten password</a> </div>
 			</fieldset>

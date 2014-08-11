@@ -35,11 +35,13 @@ if ( isset ($_SESSION["user"]) )
 
 				<div id="alert" class="alert hidden"></div>
 
-				<input type="text" name="username" placeholder="Username">
-				<input type="password" name="password" placeholder="Password">
-				<input type="password" name="password_confirm" placeholder="Confirm password">
+				<form onsubmit="return false;">
+					<input type="text" name="username" placeholder="Username">
+					<input type="password" name="password" placeholder="Password">
+					<input type="password" name="password_confirm" placeholder="Confirm password">
 
-				<button name="submit">Submit</button>
+					<button name="submit">Submit</button>
+				</form>
 			</fieldset>
 
 		</div>
