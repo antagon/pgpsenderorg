@@ -9,7 +9,7 @@ class Config
 	const SQLITE3_DB_FILE = "@SQLITE3_DB_FILE@";
 
 	// List of hostnames that are available for aliasing
-	public static const $hostname = array ("pgpsender.org");
+	public static $hostname = array ("pgpsender.org");
 };
 
 ?>
