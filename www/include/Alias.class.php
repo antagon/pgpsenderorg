@@ -80,6 +80,31 @@ class Alias
 		return $rows;
 	}
 
+	public function get_for_email_id ($email_id)
+	{
+		$sql = "SELECT id, name, created FROM ".$this::TABLE." WHERE email_id = ".intval ($email_id).";";
+
+		$res = $this->db->query ($sql);
+
+		if ( $res === false )
+			return false;
+
+		$rows = array ();
+
+		while ( ($row = $res->fetchArray (SQLITE3_ASSOC)) )
+			$rows[] = $row;
+
+		return $rows;
+	}
+
+	public function set_email_id ($alias, $email_id)
+	{
+		$email_id = ($email_id == null)? null:intval ($email_id);
+		$sql = "UPDATE ".$this::TABLE." SET email_id = ".$email_id." WHERE alias = '".$this->db->escapeString ($alias)."';";
+
+		return $this->db->exec ($sql);
+	}
+
 	public function delete ($alias, $user_id)
 	{
 		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."' AND user_id = ".intval ($user_id).";";
