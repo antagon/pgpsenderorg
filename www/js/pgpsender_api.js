@@ -112,6 +112,22 @@ function PGPSender ()
 		});
 	};
 
+	this.email_delete = function (api_key, email, callback)
+	{
+		$.post ("/api/email_delete.php", "api_key="+api_key+"&address="+email, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
 	this.alias_delete = function (api_key, alias, callback)
 	{
 		$.post ("/api/alias_delete.php", "api_key="+api_key+"&alias="+alias, function (response){
