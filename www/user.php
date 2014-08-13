@@ -1,5 +1,7 @@
 <?php
 
+require_once ("include/Config.class.php");
+
 session_start ();
 
 if ( ! isset ($_SESSION["user"]) )
@@ -40,10 +42,13 @@ if ( ! isset ($_SESSION["user"]) )
 				<div id="alert_address_new" class="alert hidden"></div>
 
 				<div id="address_new" class="hidden">
-					<input type="text" name="in_address_new" placeholder="New address"> <button name="btn_address_new_submit">Submit</button>
+					<form onsubmit="return false;">
+						<input type="text" name="in_address_new" placeholder="New address">
+						<button name="btn_address_new_submit">Submit</button>
+					</form>
 				</div>
 
-				<table id="address_table">
+				<table id="email_table">
 					<tbody>
 						<tr> <td class="text-center">No addresses are available.</td> </tr>
 					</tbody>
@@ -58,7 +63,17 @@ if ( ! isset ($_SESSION["user"]) )
 				</div>
 
 				<div id="alias_new" class="hidden">
-					<input type="text" name="in_alias_new" placeholder="New alias"> <span>@pgpsender.org</span> <button name="btn_alias_new_submit">Submit</button>
+					<form onsubmit="return false;">
+						<input type="text" name="in_alias_new" placeholder="New alias">
+
+						<select name="select_alias_hostname_new">
+							<?php foreach ( Config::$hostname as $hostname ){ ?>
+							<option value="<?php echo $hostname; ?>">@<?php echo $hostname; ?></option>
+							<?php } ?>
+						</select>
+
+						<button name="btn_alias_new_submit">Submit</button>
+					</form>
 				</div>
 
 				<table id="alias_table">
@@ -73,10 +88,12 @@ if ( ! isset ($_SESSION["user"]) )
 
 				<div id="alert_passwd" class="alert hidden"></div>
 
-				<input type="password" name="passwd_password" placeholder="Password">
-				<input type="password" name="passwd_password_new" placeholder="New password">
+				<form onsubmit="return false;">
+					<input type="password" name="passwd_password" placeholder="Password">
+					<input type="password" name="passwd_password_new" placeholder="New password">
 
-				<button name="passwd_submit">Submit</button>
+					<button name="passwd_submit">Submit</button>
+				</form>
 			</fieldset>
 
 			<fieldset>
@@ -87,9 +104,11 @@ if ( ! isset ($_SESSION["user"]) )
 					As this operation cannot be reversed, please confirm your decision by providing your password.
 				</p>
 
-				<input type="password" name="password" placeholder="Password">
+				<form onsubmit="return false;">
+					<input type="password" name="password" placeholder="Password">
 
-				<button name="submit">Confirm</button>
+					<button name="submit">Confirm</button>
+				</form>
 			</fieldset>
 
 		</div>
