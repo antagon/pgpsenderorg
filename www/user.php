@@ -39,7 +39,7 @@ if ( ! isset ($_SESSION["user"]) )
 					<button name="btn_address_new">Add address</button>
 				</div>
 
-				<div id="alert_address_new" class="alert hidden"></div>
+				<div id="alert_address" class="alert hidden"></div>
 
 				<div id="address_new" class="hidden">
 					<form onsubmit="return false;">
@@ -61,6 +61,8 @@ if ( ! isset ($_SESSION["user"]) )
 				<div>
 					<button name="btn_alias_new">Add alias</button>
 				</div>
+
+				<div id="alert_alias" class="alert hidden"></div>
 
 				<div id="alias_new" class="hidden">
 					<form onsubmit="return false;">

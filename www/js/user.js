@@ -93,7 +93,7 @@ function add_address_submit ()
 	pgpsender.email_add ($("[name=api_key]").val (), $("[name=in_address_new]").val (), function (data){
 
 		if ( data.status != 0 ){
-			show_alert ("alert_address_new", "error", data.message+".");
+			show_alert ("alert_address", "error", data.message+".");
 			return;
 		}
 
@@ -108,7 +108,7 @@ function add_alias_submit ()
 	pgpsender.alias_add ($("[name=api_key]").val (), $("[name=in_alias_new]").val (), $("[name=select_alias_hostname_new]").val (), function (data){
 
 		if ( data.status != 0 ){
-			show_alert ("alert_alias_new", "error", data.message+".");
+			show_alert ("alert_alias", "error", data.message+".");
 			return;
 		}
 
@@ -124,7 +124,7 @@ function delete_address_submit (event)
 	pgpsender.email_delete ($("[name=api_key]").val (), address, function (data){
 
 		if ( data.status != 0 ){
-			show_alert ("alert_address_new", "error", data.message+".");
+			show_alert ("alert_address", "error", data.message+".");
 			return;
 		}
 
@@ -140,7 +140,7 @@ function delete_alias_submit (event)
 	pgpsender.alias_delete ($("[name=api_key]").val (), alias, function (data){
 
 		if ( data.status != 0 ){
-			show_alert ("alert_alias_new", "error", data.message+".");
+			show_alert ("alert_alias", "error", data.message+".");
 			return;
 		}
 
@@ -150,7 +150,7 @@ function delete_alias_submit (event)
 
 $(document).ready (function (){
 	$("[name=btn_address_new]").click (function (){
-		hide_alert ("alert_address_new");
+		hide_alert ("alert_address");
 		$("[name=in_address_new]").val ("");
 		$("#address_new").show ();
 		$("[name=in_address_new]").focus ();
@@ -162,7 +162,7 @@ $(document).ready (function (){
 	});
 
 	$("[name=btn_alias_new]").click (function (){
-		hide_alert ("alert_alias_new");
+		hide_alert ("alert_alias");
 		$("[name=in_alias_new]").val ("");
 		$("#alias_new").show ();
 		$("[name=in_alias_new]").focus ();
