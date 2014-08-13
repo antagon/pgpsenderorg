@@ -86,11 +86,11 @@ p {
 	text-align:justify;
 }
 
-a { color:#2D6FAC; }
+a { color:#2D6FAC; text-decoration:none; }
 
 a:visited { color:#2D6FAC; }
 
-a:hover { text-decoration:none; }
+a:hover { text-decoration:underline; }
 
 li { margin-bottom:15px; }
 
