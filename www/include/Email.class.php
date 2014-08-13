@@ -47,7 +47,7 @@ class Email
 
 	public function owns ($address, $user_id)
 	{
-		$sql = "SELECT id FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."' AND user_id = ".intval ($user_id).";";
+		$sql = "SELECT id FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($address)."' AND user_id = ".intval ($user_id).";";
 
 		$res = $this->db->query ($sql);
 
@@ -56,7 +56,7 @@ class Email
 
 		$data = $res->fetchArray (SQLITE3_NUM);
 
-		return ($data === false)? false:true;
+		return ($data === false)? false:$data[0];
 	}
 
 	public function get_for_uid ($user_id)
@@ -78,7 +78,7 @@ class Email
 
 	public function delete ($address, $user_id)
 	{
-		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($alias)."' AND user_id = ".intval ($user_id).";";
+		$sql = "DELETE FROM ".$this::TABLE." WHERE name = '".$this->db->escapeString ($address)."' AND user_id = ".intval ($user_id).";";
 
 		return $this->db->exec ($sql);
 	}
