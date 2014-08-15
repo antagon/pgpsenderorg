@@ -111,6 +111,13 @@ class User
 
 		return ($data === false)? false:true;
 	}
+
+	public function set_primary_email_id ($username, $email_id)
+	{
+		$sql = "UPDATE ".$this::TABLE." SET primary_email_id = ".intval ($email_id).";";
+
+		return $this->db->exec ($sql);
+	}
 };
 
 ?>
