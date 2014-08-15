@@ -48,6 +48,22 @@ function PGPSender ()
 		});
 	};
 
+	this.user_set_primary_email = function (api_key, email, callback)
+	{
+		$.post ("/api/user_set_primary_email.php", "api_key="+api_key+"&address="+email, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
 	this.email_get = function (api_key, callback)
 	{
 		$.post ("/api/email_get.php", "api_key="+api_key, function (response){
