@@ -17,7 +17,7 @@ function add_email_row (id, address, is_primary, is_key)
 
 	$("#"+id+" tbody").append ("<tr> <td>"+address+"</td> <td class=\"text-right\"> "+buttons+" </td> </tr>");
 
-	$(".btn_address_primary").last ().click (function (){ console.log ("TODO..."); });
+	$(".btn_address_primary").last ().click (set_primary_email_submit);
 	$(".btn_address_key").last ().click (function (){ console.log ("TODO..."); });
 	$(".btn_address_delete").last ().click (delete_address_submit);
 }
@@ -48,7 +48,7 @@ function get_userdata ()
 		$("#email_table tbody").html ("");
 
 		for ( var i = 0; i < emails.length; i++ ){
-			add_email_row ("email_table", emails[i].name, false, false);
+			add_email_row ("email_table", emails[i].name, emails[i].primary, false);
 		}
 	});
 
@@ -83,6 +83,22 @@ function change_password_submit ()
 		}
 
 		show_alert ("alert_passwd", "success", "Password changed successfully.");
+	});
+}
+
+function set_primary_email_submit (event)
+{
+	var pgpsender = new PGPSender ();
+	var address = $(event.target).data ("address");
+
+	pgpsender.user_set_primary_email ($("[name=api_key]").val (), address, function (data){
+
+		if ( data.status != 0 ){
+			show_alert ("alert_address", "error", data.message+".");
+			return;
+		}
+
+		get_userdata ();
 	});
 }
 
