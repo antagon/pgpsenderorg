@@ -102,8 +102,9 @@ if ( ! isset ($_SESSION["user"]) )
 				<legend>Delete account</legend>
 
 				<p class="alert-error">
-					Upon deleting your account, all data associated with the account will be deleted from our database!<br>
-					As this operation cannot be reversed, please confirm your decision by providing your password.
+					When deleting the account, your email addresses will be deleted from the database.
+					Please note, that the aliases will be preserved to avoid being reused by different user.<br><br>
+					This operation cannot be reversed, please confirm your decision by providing your password.
 				</p>
 
 				<form onsubmit="return false;">
