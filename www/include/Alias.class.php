@@ -100,7 +100,7 @@ class Alias
 	public function set_email_id ($alias, $email_id)
 	{
 		$email_id = ($email_id == null)? null:intval ($email_id);
-		$sql = "UPDATE ".$this::TABLE." SET email_id = ".$email_id." WHERE alias = '".$this->db->escapeString ($alias)."';";
+		$sql = "UPDATE ".$this::TABLE." SET email_id = ".$email_id." WHERE name = '".$this->db->escapeString ($alias)."';";
 
 		return $this->db->exec ($sql);
 	}
