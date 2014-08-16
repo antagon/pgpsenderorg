@@ -22,6 +22,11 @@ $user_data = $user_db->authenticate_key ($_POST["api_key"]);
 if ( $user_data === false )
 	ApiResponse::json_exit (ApiResponse::E_UNAUTHORIZED, "Unauthorized");
 
+$addr_tokens = explode ("@", $_POST["address"]);
+
+if ( in_array ($addr_tokens[1], Config::$hostname) )
+	ApiResponse::json_exit (ApiResponse::E_ILEGAL, "Invalid hostname");
+
 $email_db = new Email (Config::SQLITE3_DB_FILE);
 
 if ( $email_db->exists ($_POST["address"]) )
