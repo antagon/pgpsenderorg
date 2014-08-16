@@ -12,6 +12,7 @@ class ApiResponse
 	const E_UNAUTHORIZED = 4;
 	const E_FORMAT = 5;
 	const E_NEXISTS = 6;
+	const E_ILEGAL = 7;
 
 	public static function json_exit ($status, $message = "")
 	{
