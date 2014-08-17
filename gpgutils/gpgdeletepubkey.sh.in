@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#
+# Copyright (c) 2014, PGPSender.org
+#
+
+GPG_BIN="/usr/bin/gpg"
+GPG2_BIN="/usr/bin/gpg2"
+
+function gpg_delete_pub_key ()
+{
+	recipient="$1"
+
+	$GPG_BIN --batch --delete-key --yes "$recipient"
+	return $?
+}
+
+function gpg2_delete_pub_key ()
+{
+	recipient="$1"
+
+	$GPG2_BIN --batch --delete-key --yes "$recipient"
+	return $?
+}
+
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 <RECIPIENT>"
+	exit 1
+fi
+
+recipient="$1"
+
+if [ -x $GPG2_BIN ]; then
+	gpg2_delete_pub_key "$recipient"
+	exit $?
+elif [ -x $GPG_BIN ]; then
+	gpg_delete_pub_key "$recipient"
+	exit $?
+fi
+
+echo "$0: cannot execute GPG binary."
+
+exit 1
+
