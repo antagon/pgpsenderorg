@@ -24,7 +24,7 @@ class Alias
 
 	public function create ($alias, $user_id, $email_id = null)
 	{
-		$email_id = ($email_id == null)? null:intval ($email_id);
+		$email_id = ($email_id == null)? "NULL":intval ($email_id);
 
 		$sql = "INSERT INTO ".$this::TABLE." (name, user_id, email_id) VALUES (
 						'".$this->db->escapeString ($alias)."',
@@ -99,7 +99,7 @@ class Alias
 
 	public function set_email_id ($alias, $email_id)
 	{
-		$email_id = ($email_id == null)? null:intval ($email_id);
+		$email_id = ($email_id == null)? "NULL":intval ($email_id);
 		$sql = "UPDATE ".$this::TABLE." SET email_id = ".$email_id." WHERE name = '".$this->db->escapeString ($alias)."';";
 
 		return $this->db->exec ($sql);
