@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# Copyright (c) 2014, PGPSender.org
+#
+
 GPG_BIN="/usr/bin/gpg"
 GPG2_BIN="/usr/bin/gpg2"
 
