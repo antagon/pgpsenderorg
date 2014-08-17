@@ -1,0 +1,40 @@
+#!/bin/bash
+
+GPG_BIN="/usr/bin/gpg"
+GPG2_BIN="/usr/bin/gpg2"
+
+function gpg_get_key ()
+{
+	recipient="$1"
+
+	$GPG_BIN --export -a "$recipient"
+	return $?
+}
+
+function gpg2_get_key ()
+{
+	recipient="$1"
+
+	$GPG2_BIN --export -a "$recipient"
+	return $?
+}
+
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 <RECIPIENT>"
+	exit 1
+fi
+
+recipient="$1"
+
+if [ -x $GPG2_BIN ]; then
+	gpg2_get_key "$recipient"
+	exit $?
+elif [ -x $GPG_BIN ]; then
+	gpg_get_key "$recipient"
+	exit $?
+fi
+
+echo "$0: cannot execute GPG binary."
+
+exit 1
+

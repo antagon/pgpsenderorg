@@ -1,0 +1,40 @@
+#!/bin/bash
+
+GPG_BIN="/usr/bin/gpg"
+GPG2_BIN="/usr/bin/gpg2"
+
+function gpg_encrypt ()
+{
+	recipient="$1"
+
+	cat | $GPG_BIN --batch --encrypt --armor -r "$recipient"
+	return $?
+}
+
+function gpg2_encrypt ()
+{
+	recipient="$1"
+
+	cat | $GPG2_BIN --batch --encrypt --armor -r "$recipient"
+	return $?
+}
+
+if [ $# -lt 1 ]; then
+	echo "Usage: $0 <RECIPIENT>"
+	exit 1
+fi
+
+recipient="$1"
+
+if [ -x $GPG2_BIN ]; then
+	gpg2_encrypt "$recipient"
+	exit $?
+elif [ -x $GPG_BIN ]; then
+	gpg_encrypt "$recipient"
+	exit $?
+fi
+
+echo "$0: cannot execute GPG binary."
+
+exit 1
+

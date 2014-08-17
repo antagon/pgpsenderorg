@@ -1,0 +1,29 @@
+#!/bin/bash
+
+GPG_BIN="/usr/bin/gpg"
+GPG2_BIN="/usr/bin/gpg2"
+
+function gpg_import ()
+{
+	cat | $GPG_BIN --batch --import
+	return $?
+}
+
+function gpg2_import ()
+{
+	cat | $GPG2_BIN --batch --import 
+	return $?
+}
+
+if [ -x $GPG2_BIN ]; then
+	gpg2_import 
+	exit $?
+elif [ -x $GPG_BIN ]; then
+	gpg_import
+	exit $?
+fi
+
+echo "$0: cannot execute GPG binary."
+
+exit 1
+
