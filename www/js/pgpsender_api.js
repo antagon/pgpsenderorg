@@ -159,5 +159,21 @@ function PGPSender ()
 			callback (data);
 		});
 	};
+
+	this.alias_assign_address = function (api_key, alias, address, callback)
+	{
+		$.post ("/api/alias_assign_address.php", "api_key="+api_key+"&alias="+alias+"&address="+address, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
 };
 
