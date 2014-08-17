@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# Copyright (c) 2014, PGPSender.org
+#
+
 GPG_BIN="/usr/bin/gpg"
 GPG2_BIN="/usr/bin/gpg2"
 
@@ -7,7 +11,7 @@ function gpg_get_key ()
 {
 	recipient="$1"
 
-	$GPG_BIN --export -a "$recipient"
+	$GPG_BIN --batch --export --armor "$recipient"
 	return $?
 }
 
@@ -15,7 +19,7 @@ function gpg2_get_key ()
 {
 	recipient="$1"
 
-	$GPG2_BIN --export -a "$recipient"
+	$GPG2_BIN --batch --export --armor "$recipient"
 	return $?
 }
 
