@@ -14,6 +14,9 @@ all: $(NAME)
 install: $(NAME)
 	install -m 755 $(NAME) $(INSTALL_RELAY_PATH)
 
+uninstall:
+	rm -f $(INSTALL_RELAY_PATH)/$(NAME)
+
 $(NAME): main.o smtpd.o smtp.o
 	$(CC) $(CFLAGS) $^ -o $(NAME)
 

@@ -14,6 +14,12 @@ install: $(OBJECTS)
 	install -m 755 gpgencrypt.sh $(INSTALL_GPGUTILS_PATH)
 	install -m 755 gpgdeletepubkey.sh $(INSTALL_GPGUTILS_PATH)
 
+uninstall:
+	rm -f $(INSTALL_GPGUTILS_PATH)/gpgimport.sh
+	rm -f $(INSTALL_GPGUTILS_PATH)/gpggetkey.sh
+	rm -f $(INSTALL_GPGUTILS_PATH)/gpgencrypt.sh
+	rm -f $(INSTALL_GPGUTILS_PATH)/gpgdeletepubkey.sh
+
 gpgimport.sh: gpgimport.sh.in
 	cp gpgimport.sh.in gpgimport.sh
 
