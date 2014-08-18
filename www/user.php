@@ -48,11 +48,7 @@ if ( ! isset ($_SESSION["user"]) )
 					</form>
 				</div>
 
-				<table id="email_table">
-					<tbody>
-						<tr> <td class="text-center">No addresses are available.</td> </tr>
-					</tbody>
-				</table>
+				<div id="email_table" class="table"></div>
 			</fieldset>
 
 			<fieldset>
@@ -78,11 +74,7 @@ if ( ! isset ($_SESSION["user"]) )
 					</form>
 				</div>
 
-				<table id="alias_table">
-					<tbody>
-						<tr> <td class="text-center">No aliases are available.</td> </tr>
-					</tbody>
-				</table>
+				<div id="alias_table" class="table"></div>
 			</fieldset>
 
 			<fieldset>
@@ -103,7 +95,7 @@ if ( ! isset ($_SESSION["user"]) )
 
 				<p class="alert-error">
 					When deleting the account, your email addresses will be deleted from the database.
-					Please note, that the aliases will be preserved to avoid being reused by different user.<br><br>
+					Please note, that the aliases will be preserved to avoid being reused by another user.<br><br>
 					This operation cannot be reversed, please confirm your decision by providing your password.
 				</p>
 

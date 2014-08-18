@@ -11,11 +11,11 @@ function add_email_row (id, address, is_primary, is_key)
 	if ( is_key )
 		buttons += "<button class=\"btn_address_key\" data-address=\""+address+"\" title=\"Set public key\"> <span class=\"fa fa-lock\"></span> </button>";
 	else
-		buttons += "<button class=\"btn_address_key\" data-address=\""+address+"\" title=\"Set public key\"> <span class=\"fa fa-unlock-alt\"></span> </button>";
+		buttons += "<button class=\"btn_address_key\" data-address=\""+address+"\" title=\"Set public key\"> <span class=\"fa fa-lock\"></span> </button>";
 
 	buttons += "<button class=\"btn_address_delete\" data-address=\""+address+"\" title=\"Delete\"> <span class=\"fa fa-trash-o\"></span> </button>";
 
-	$("#"+id+" tbody").append ("<tr> <td>"+address+"</td> <td class=\"text-right\"> "+buttons+" </td> </tr>");
+	$("#"+id).append ("<div class=\"row\"> <div class=\"left\">"+address+"</div> <div class=\"right text-right\"> "+buttons+" </div> </div>");
 
 	$(".btn_address_primary").last ().click (set_primary_email_submit);
 	$(".btn_address_key").last ().click (function (){ console.log ("TODO..."); });
@@ -37,7 +37,7 @@ function add_alias_row (id, alias, assigned_address, addresses)
 
 	buttons += "<button class=\"btn_alias_delete\" data-alias=\""+alias+"\" title=\"Delete\"> <span class=\"fa fa-trash-o\"></span> </button>";
 
-	$("#"+id+" tbody").append ("<tr> <td>"+alias+"</td> <td class=\"text-right\">"+buttons+"</td> </tr>");
+	$("#"+id).append ("<div class=\"row\"> <div class=\"left\">"+alias+"</div> <div class=\"right text-right\">"+buttons+"</div> </div>");
 
 	$(".select_alias_target").last ().change (assign_alias_address_submit);
 	$(".btn_alias_delete").last ().click (delete_alias_submit);
@@ -54,7 +54,7 @@ function get_userdata ()
 		if ( data.status != 0 )
 			return;
 
-		$("#email_table tbody").html ("");
+		$("#email_table").html ("");
 
 		for ( var i = 0; i < emails.length; i++ ){
 			add_email_row ("email_table", emails[i].name, emails[i].primary, false);
@@ -68,7 +68,7 @@ function get_userdata ()
 			if ( data.status != 0 )
 				return;
 
-			$("#alias_table tbody").html ("");
+			$("#alias_table").html ("");
 
 			for ( var i = 0; i < aliases.length; i++ ){
 				var assigned_address = null;
