@@ -4,7 +4,7 @@
 
 include ../Makefile.conf
 
-NAME=$(SQLITE3_DB_FILE)
+NAME = $(INSTALL_DB_FILE)
 
 all: $(NAME)
 
@@ -14,7 +14,7 @@ $(NAME): alias.sql user.sql email.sql
 	sqlite3 $(NAME) < email.sql
 
 install: $(NAME)
-	install -m 664 $(NAME) $(INSTALL_DB_PATH)
+	install -m 664 $(NAME) $(INSTALL_DATA_PATH)
 
 clean:
 	rm -f $(NAME)

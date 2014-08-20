@@ -7,15 +7,15 @@ include ../../Makefile.conf
 CC = gcc
 CFLAGS = -std=c99 -pedantic -ggdb -Wall -D_GNU_SOURCE
 
-NAME = $(SMTP_RELAY_FILE)
+NAME = smtp_relay
 
 all: $(NAME)
 
 install: $(NAME)
-	install -m 755 $(NAME) $(INSTALL_RELAY_PATH)
+	install -m 755 $(NAME) $(INSTALL_BIN_PATH)
 
 uninstall:
-	rm -f $(INSTALL_RELAY_PATH)/$(NAME)
+	rm -f $(INSTALL_BIN_PATH)/$(NAME)
 
 $(NAME): main.o smtpd.o smtp.o
 	$(CC) $(CFLAGS) $^ -o $(NAME)
