@@ -14,6 +14,10 @@ install:
 	$(MAKE) -C smtp_relay/ install
 	$(MAKE) -C www/ install
 
+uninstall:
+	$(MAKE) -C gpgutils/ uninstall
+	$(MAKE) -C smtp_relay/ uninstall
+
 clean:
 	$(MAKE) -C db/ clean
 	$(MAKE) -C gpgutils/ clean
