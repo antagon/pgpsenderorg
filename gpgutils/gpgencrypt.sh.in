@@ -7,11 +7,14 @@
 GPG_BIN="/usr/bin/gpg"
 GPG2_BIN="/usr/bin/gpg2"
 
+GPG_KEYRING="@GPG_KEYRING@"
+GPG_SEC_KEYRING="@GPG_SEC_KEYRING@"
+
 function gpg_encrypt ()
 {
 	recipient="$1"
 
-	cat | $GPG_BIN --batch --encrypt --armor -r "$recipient"
+	cat | $GPG_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --encrypt --armor -r "$recipient"
 	return $?
 }
 
@@ -19,7 +22,7 @@ function gpg2_encrypt ()
 {
 	recipient="$1"
 
-	cat | $GPG2_BIN --batch --encrypt --armor -r "$recipient"
+	cat | $GPG2_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --encrypt --armor -r "$recipient"
 	return $?
 }
 
@@ -29,6 +32,11 @@ if [ $# -lt 1 ]; then
 fi
 
 recipient="$1"
+
+if [ ! -e "$GPG_KEYRING" ]; then
+	echo "$0: keyring '$GPG_KEYRING' not found"
+	exit 1
+fi
 
 if [ -x $GPG2_BIN ]; then
 	gpg2_encrypt "$recipient"
