@@ -19,7 +19,7 @@
 
 #define QUEUE_DIR "./queue"
 
-static int daemon_loop = 1;
+static volatile int daemon_loop = 1;
 static int connections_cnt = 0;
 
 static void
@@ -64,7 +64,6 @@ main (int argc, char *argv[])
 	sigemptyset (&(sa.sa_mask));
 	sa.sa_flags = 0;
 
-	rval = 0;
 	rval &= sigaction (SIGCHLD, &sa, NULL);
 
 	sa.sa_handler = SIG_IGN;
