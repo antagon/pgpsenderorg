@@ -1,15 +1,6 @@
 #ifndef _SMTP_H
 #define _SMTP_H
 
-#include <stdio.h>
-
-enum
-{
-	SMTP_E_OK = 0x00,
-	SMTP_E_CONTINUE = 0x01,
-	SMTP_E_UNKNWN
-};
-
 enum
 {
 	SMTP_C_HELO = 0x01,
@@ -48,21 +39,6 @@ enum
 552	Requested mail action aborted: exceeded storage allocation
 553	Requested action not taken: mailbox name not allowed
 554	Transaction failed*/
-
-struct smtp_request
-{
-	int type;
-};
-
-struct smtp_response
-{
-	int type;
-	char *message;
-};
-
-extern struct smtp_response smtp_responses[];
-
-extern int smtp_parse_request (const char *str, size_t str_len, struct smtp_request *req);
 
 #endif
 

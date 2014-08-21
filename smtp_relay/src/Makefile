@@ -17,7 +17,7 @@ install: $(NAME)
 uninstall:
 	rm -f $(INSTALL_BIN_PATH)/$(NAME)
 
-$(NAME): main.o smtpd.o smtp.o
+$(NAME): main.o smtpd.o parser.o
 	$(CC) $(CFLAGS) $^ -o $(NAME)
 
 main.o: main.c
@@ -26,8 +26,7 @@ main.o: main.c
 smtpd.o: smtpd.c smtpd.h
 	$(CC) $(CFLAGS) -c $<
 
-smtp.o: smtp.c smtp.h
-	$(CC) $(CFLAGS) -c $<
+parser.o: parser.c parser.h
 
 clean:
 	rm -f $(NAME) *.o

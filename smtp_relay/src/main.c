@@ -10,6 +10,7 @@
 
 #include "smtpd.h"
 #include "smtp.h"
+#include "parser.h"
 #include "log.h"
 
 #define SMTPD_HOST "0.0.0.0"
@@ -39,6 +40,17 @@ sigchld_handler (int signo)
 	}
 }
 
+static int
+parser_on_word_cb (struct parser *parser, const char *buff, size_t len)
+{
+	return 1;
+}
+
+static int
+parser_on_eol_cb (struct parser *parser)
+{
+	return 1;
+}
 
 int
 main (int argc, char *argv[])
@@ -46,7 +58,14 @@ main (int argc, char *argv[])
 	smtpd_t smtpd;
 	struct smtpd_config smtpd_config;
 	struct sigaction sa;
+	struct parser parser;
 	int rval;
+
+	// Initialize parser
+	parser.word_delim = ' ';
+	parser.on_word = parser_on_word_cb;
+	parser.on_eol = parser_on_eol_cb;
+	parser.user_data = NULL;
 
 	openlog ("smtpd", LOG_PID | LOG_PERROR, LOG_USER);
 
@@ -138,9 +157,9 @@ main (int argc, char *argv[])
 			continue;
 		}
 
+		// Client IO loop
 		while ( 1 ){
 			unsigned char msg_buff[256];
-			struct smtp_request smtp_request;
 			struct timeval tv;
 			ssize_t recv_len;
 			fd_set rdset;
@@ -183,38 +202,7 @@ main (int argc, char *argv[])
 				return EXIT_SUCCESS;
 			}
 
-			if ( smtp_parse_request ((char*) msg_buff, recv_len, &smtp_request) == SMTP_E_OK ){
-
-				switch ( smtp_request.type ){
-					case SMTP_C_HELO:
-						fprintf (stderr, "HELO!!!\n");
-						break;
-					case SMTP_C_EHLO:
-						fprintf (stderr, "EHLO!!!\n");
-						break;
-					case SMTP_C_MAILFROM:
-						fprintf (stderr, "MAILFROM!!!\n");
-						break;
-					case SMTP_C_RCPTTO:
-						fprintf (stderr, "RCPTTO!!!\n");
-						break;
-					case SMTP_C_DATA:
-						fprintf (stderr, "DATA!!!\n");
-						break;
-					case SMTP_C_RSET:
-						fprintf (stderr, "RSET!!!\n");
-						break;
-					case SMTP_C_VRFY:
-						fprintf (stderr, "VRFY!!!\n");
-						break;
-					case SMTP_C_NOOP:
-						fprintf (stderr, "NOOP!!!\n");
-						break;
-					case SMTP_C_QUIT:
-						fprintf (stderr, "QUIT!!!\n");
-						break;
-				}
-			}
+			// TODO: parse requests	
 		}
 	}
 
