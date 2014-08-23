@@ -14,7 +14,7 @@ struct parser
 	char word_delim;
 };
 
-extern int parser_exec (struct parser *parser, const char *buff, size_t len);
+extern size_t parser_exec (struct parser *parser, const char *buff, size_t len);
 
 #endif
 

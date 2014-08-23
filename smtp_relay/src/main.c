@@ -9,8 +9,7 @@
 #include <unistd.h>
 
 #include "smtpd.h"
-#include "smtp.h"
-#include "parser.h"
+#include "smtp_parser.h"
 #include "log.h"
 
 #define SMTPD_HOST "0.0.0.0"
@@ -40,15 +39,78 @@ sigchld_handler (int signo)
 	}
 }
 
+//
+// Callbacks for smtp parser
+//
 static int
-parser_on_word_cb (struct parser *parser, const char *buff, size_t len)
+parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
+	fprintf (stderr, "HELO\n");
 	return 1;
 }
 
 static int
-parser_on_eol_cb (struct parser *parser)
+parser_on_ehlo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
+	fprintf (stderr, "EHLO\n");
+	return 1;
+}
+
+static int
+parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
+{
+	fprintf (stderr, "MAIL\n");
+	return 1;
+}
+
+static int
+parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
+{
+	fprintf (stderr, "RCPT\n");
+	return 1;
+
+}
+
+static int
+parser_on_data_cb (void *user_data)
+{
+	fprintf (stderr, "DATA\n");
+	return 1;
+}
+
+static int
+parser_on_eof_cb (void *user_data)
+{
+	fprintf (stderr, "EOF\n");
+	return 1;
+
+}
+
+static int
+parser_on_rset_cb (void *user_data)
+{
+	fprintf (stderr, "RSET\n");
+	return 1;
+}
+
+static int
+parser_on_vrfy_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
+{
+	fprintf (stderr, "VRFY\n");
+	return 1;
+}
+
+static int
+parser_on_noop_cb (void *user_data)
+{
+	fprintf (stderr, "NOOP\n");
+	return 1;
+}
+
+static int
+parser_on_quit_cb (void *user_data)
+{
+	fprintf (stderr, "QUIT\n");
 	return 1;
 }
 
@@ -56,16 +118,10 @@ int
 main (int argc, char *argv[])
 {
 	smtpd_t smtpd;
+	struct smtp_parser parser;
 	struct smtpd_config smtpd_config;
 	struct sigaction sa;
-	struct parser parser;
 	int rval;
-
-	// Initialize parser
-	parser.word_delim = ' ';
-	parser.on_word = parser_on_word_cb;
-	parser.on_eol = parser_on_eol_cb;
-	parser.user_data = NULL;
 
 	openlog ("smtpd", LOG_PID | LOG_PERROR, LOG_USER);
 
@@ -95,6 +151,20 @@ main (int argc, char *argv[])
 		log_error ("Cannot setup signal handlers: %s", strerror (errno));
 		return EXIT_FAILURE;
 	}
+
+	// Configure smtp parser
+	parser.on_helo = parser_on_helo_cb;
+	parser.on_ehlo = parser_on_ehlo_cb;
+	parser.on_mail = parser_on_mail_cb;
+	parser.on_rcpt = parser_on_rcpt_cb;
+	parser.on_data = parser_on_data_cb;
+	parser.on_eof = parser_on_eof_cb;
+	parser.on_rset = parser_on_rset_cb;
+	parser.on_vrfy = parser_on_vrfy_cb;
+	parser.on_noop = parser_on_noop_cb;
+	parser.on_quit = parser_on_quit_cb;
+
+	smtp_parser_init (&parser);
 
 	// Configure smtpd
 	smtpd_config.address = SMTPD_HOST;
@@ -158,11 +228,14 @@ main (int argc, char *argv[])
 		}
 
 		// Client IO loop
-		while ( 1 ){
+		for ( ;; ){
 			unsigned char msg_buff[256];
 			struct timeval tv;
 			ssize_t recv_len;
+			size_t parsed_len;
 			fd_set rdset;
+
+			parsed_len = 0;
 
 			tv.tv_sec = CONNECTION_TIMEOUT;
 			tv.tv_usec = 0;
@@ -202,7 +275,10 @@ main (int argc, char *argv[])
 				return EXIT_SUCCESS;
 			}
 
-			// TODO: parse requests	
+			// Parser loop
+			do {
+				parsed_len += smtp_parser_exec (&parser, (const char*)  msg_buff, recv_len);
+			} while ( parsed_len != recv_len );
 		}
 	}
 
