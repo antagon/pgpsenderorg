@@ -14,7 +14,7 @@ parser_exec (struct parser *parser, const char *buff, size_t len)
 
 		if ( *buff_pos == parser->word_delim ){
 
-			if ( parser->on_word (parser, buff_evt_pos, ((const char*) buff_pos) - ((const char*) buff)) < 1 )
+			if ( parser->on_word (parser, buff_evt_pos, (buff_pos - buff_evt_pos)) < 1 )
 				return buff_pos + 1 - buff;
 
 			buff_evt_pos = (const char*) (buff_pos + 1);
@@ -27,7 +27,7 @@ parser_exec (struct parser *parser, const char *buff, size_t len)
 
 		if ( ((eol & 0x01) != 0) && ((eol & 0x02) != 0) ){
 
-			if ( parser->on_word (parser, buff_evt_pos, ((const char*) buff_pos) - ((const char*) buff) - 1) < 1 )
+			if ( parser->on_word (parser, buff_evt_pos, (buff_pos - buff_evt_pos) - 1) < 1 )
 				return buff_pos + 1 - buff;
 
 			buff_evt_pos = (const char*) (buff_pos + 1);
