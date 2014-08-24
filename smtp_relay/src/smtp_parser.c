@@ -24,6 +24,8 @@ _parser_on_word_cb (struct parser *parser, const char *buff, size_t len)
 			request->type = SMTP_C_RCPTTO;
 		else if ( CMD_MATCHES (buff, "DATA", len) )
 			request->type = SMTP_C_DATA;
+		else if ( CMD_MATCHES (buff, ".", len) )
+			request->type = SMTP_C_EOF;
 		else if ( CMD_MATCHES (buff, "RSET", len) )
 			request->type = SMTP_C_RSET;
 		else if ( CMD_MATCHES (buff, "VRFY", len) )
@@ -85,7 +87,6 @@ void
 smtp_parser_init (struct smtp_parser *smtp_parser)
 {
 	smtp_parser->parser.word_delim = ' ';
-	smtp_parser->parser.user_data = NULL;
 	smtp_parser->parser.on_word = _parser_on_word_cb;
 	smtp_parser->parser.on_eol = _parser_on_eol_cb;
 }
@@ -125,6 +126,9 @@ smtp_parser_exec (struct smtp_parser *smtp_parser, const char *buff, size_t len)
 				break;
 			case SMTP_C_DATA:
 				rval = smtp_parser->on_data (smtp_parser->user_data);
+				break;
+			case SMTP_C_EOF:
+				rval = smtp_parser->on_eof (smtp_parser->user_data);
 				break;
 			case SMTP_C_RSET:
 				rval = smtp_parser->on_rset (smtp_parser->user_data);
