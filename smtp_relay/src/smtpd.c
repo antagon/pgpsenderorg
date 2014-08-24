@@ -19,6 +19,8 @@ smtpd_open (smtpd_t *resource)
 
 	if ( resource->sock == -1 )
 		return errno;
+	
+	opt = 1;
 
 	if ( setsockopt (resource->sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof (opt)) == -1 )
 		return errno;
