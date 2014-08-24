@@ -11,6 +11,9 @@ _parser_on_word_cb (struct parser *parser, const char *buff, size_t len)
 {
 	struct smtp_req *request;
 
+	if ( len == 0 )
+		return 1;
+
 	request = (struct smtp_req*) parser->user_data;
 
 	if ( request->type == 0 ){
