@@ -12,20 +12,15 @@ GPG_SEC_KEYRING="@GPG_SEC_KEYRING@"
 
 function gpg_import ()
 {
-	cat | $GPG_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --import
+	$GPG_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --import
 	return $?
 }
 
 function gpg2_import ()
 {
-	cat | $GPG2_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --import
+	$GPG2_BIN --batch --keyring "$GPG_KEYRING" --secret-keyring "$GPG_SEC_KEYRING" --no-default-keyring --import
 	return $?
 }
-
-if [ ! -e "$GPG_KEYRING" ]; then
-	echo "$0: keyring '$GPG_KEYRING' not found"
-	exit 1
-fi
 
 if [ -x $GPG2_BIN ]; then
 	gpg2_import 

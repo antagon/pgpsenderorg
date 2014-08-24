@@ -33,11 +33,6 @@ fi
 
 recipient="$1"
 
-if [ ! -e "$GPG_KEYRING" ]; then
-	echo "$0: keyring '$GPG_KEYRING' not found"
-	exit 1
-fi
-
 if [ -x $GPG2_BIN ]; then
 	gpg2_get_key "$recipient"
 	exit $?
