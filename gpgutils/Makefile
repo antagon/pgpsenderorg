@@ -25,23 +25,23 @@ uninstall:
 
 
 gpgimport.sh: gpgimport.sh.in
-	sed -e 's|@GPG_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_KEYRING)|g'\
-		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_SEC_KEYRING)|g'\
+	sed -e 's|@GPG_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_KEYRING)|g'\
+		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_SEC_KEYRING)|g'\
 		$^ > gpgimport.sh
 
 gpggetkey.sh: gpggetkey.sh.in
-	sed -e 's|@GPG_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_KEYRING)|g'\
-		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_SEC_KEYRING)|g'\
+	sed -e 's|@GPG_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_KEYRING)|g'\
+		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_SEC_KEYRING)|g'\
 		$^ > gpggetkey.sh
 
 gpgencrypt.sh: gpgencrypt.sh.in
-	sed -e 's|@GPG_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_KEYRING)|g'\
-		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_SEC_KEYRING)|g'\
+	sed -e 's|@GPG_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_KEYRING)|g'\
+		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_SEC_KEYRING)|g'\
 		$^ > gpgencrypt.sh
 
 gpgdeletepubkey.sh: gpgdeletepubkey.sh.in
-	sed -e 's|@GPG_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_KEYRING)|g'\
-		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_BIN_PATH)/$(GPG_SEC_KEYRING)|g'\
+	sed -e 's|@GPG_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_KEYRING)|g'\
+		-e 's|@GPG_SEC_KEYRING@|$(INSTALL_DATA_PATH)/$(GPG_SEC_KEYRING)|g'\
 		$^ > gpgdeletepubkey.sh
 
 clean:
