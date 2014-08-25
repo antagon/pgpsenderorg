@@ -5,7 +5,7 @@
 include ../../Makefile.conf
 
 CC = gcc
-CFLAGS = -std=c99 -pedantic -ggdb -Wall -D_GNU_SOURCE
+CFLAGS = -std=c99 -pedantic -O2 -ggdb -Wall -D_GNU_SOURCE
 
 NAME = smtp_relay
 
@@ -17,7 +17,7 @@ install: $(NAME)
 uninstall:
 	rm -f $(INSTALL_BIN_PATH)/$(NAME)
 
-$(NAME): main.o smtpd.o smtp_parser.o parser.o
+$(NAME): main.o smtpd.o parser.o smtp_parser.o smtp_envelope.o
 	$(CC) $(CFLAGS) $^ -o $(NAME)
 
 main.o: main.c
@@ -26,10 +26,13 @@ main.o: main.c
 smtpd.o: smtpd.c smtpd.h
 	$(CC) $(CFLAGS) -c $<
 
+parser.o: parser.c parser.h
+	$(CC) $(CFLAGS) -c $<
+
 smtp_parser.o: smtp_parser.c smtp_parser.h
 	$(CC) $(CFLAGS) -c $<
 
-parser.o: parser.c parser.h
+smtp_envelope.o: smtp_envelope.c smtp_envelope.h
 	$(CC) $(CFLAGS) -c $<
 
 clean:
