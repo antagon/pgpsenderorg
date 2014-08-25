@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stddef.h>
 #include <string.h>
 #include <strings.h>
@@ -100,6 +101,9 @@ smtp_parser_exec (struct smtp_parser *smtp_parser, const char *buff, size_t len)
 	size_t parsed_len;
 	int rval;
 
+	// Everything is ok
+	rval = 1;
+
 	memset (&(smtp_parser->request), 0, sizeof (struct smtp_req));
 	smtp_parser->parser.user_data = &(smtp_parser->request);
 
@@ -144,7 +148,59 @@ smtp_parser_exec (struct smtp_parser *smtp_parser, const char *buff, size_t len)
 				break;
 		}
 	}
+
+	if ( ! rval )
+		parsed_len = 0;
 	
 	return parsed_len;
+}
+
+int
+smtp_strresponse (int code, char *buff, size_t len)
+{
+	const char *str;
+
+	switch ( code ){
+		case SMTP_READY:
+			str = "Service ready";
+			break;
+		case SMTP_BYE:
+			str = "Bye";
+			break;
+		case SMTP_MAILOK:
+			str = "OK";
+			break;
+		case SMTP_STARTMAIL:
+			str = "End data with '.'";
+			break;
+		case SMTP_ENOTAVAIL:
+			str = "Service not available";
+			break;
+		case SMTP_ELOCAL:
+			str = "Local error";
+			break;
+		case SMTP_ESTORAGE:
+			str = "Not enough storage available";
+			break;
+		case SMTP_ESYNTAX:
+			str = "Syntax error";
+			break;
+		case SMTP_EARGSYNTAX:
+			str = "Syntax error in parameter";
+			break;
+		case SMTP_ECMDNIMPL:
+			str = "Command not implemented";
+			break;
+		case SMTP_EBADSEQ:
+			str = "Bad command sequence";
+			break;
+		case SMTP_EARGNIMPL:
+			str = "Command parameter not implemented";
+			break;
+		default:
+			return -1;
+	}
+
+	return snprintf (buff, len, "%d %s\r\n", code, str);
 }
 

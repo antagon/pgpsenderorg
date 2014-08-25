@@ -19,6 +19,22 @@ enum
 	SMTP_C_QUIT
 };
 
+enum
+{
+	SMTP_READY = 220,
+	SMTP_BYE = 221,
+	SMTP_MAILOK = 250,
+	SMTP_STARTMAIL = 354,
+	SMTP_ENOTAVAIL = 421,
+	SMTP_ELOCAL = 451,
+	SMTP_ESTORAGE = 452,
+	SMTP_ESYNTAX = 500,
+	SMTP_EARGSYNTAX = 501,
+	SMTP_ECMDNIMPL = 502,
+	SMTP_EBADSEQ = 503,
+	SMTP_EARGNIMPL = 504
+};
+
 /*
 211	System status, or system help reply
 214	Help message
@@ -46,13 +62,13 @@ enum
 554	Transaction failed
 */
 
-#define SMTP_ARGS_MAX 4
-
 struct smtp_req_arg
 {
 	const char *val;
 	size_t len;
 };
+
+#define SMTP_ARGS_MAX 4
 
 struct smtp_req
 {
@@ -82,6 +98,8 @@ struct smtp_parser
 extern void smtp_parser_init (struct smtp_parser *smtp_parser);
 
 extern size_t smtp_parser_exec (struct smtp_parser *smtp_parser, const char *buff, size_t len);
+
+extern int smtp_strresponse (int code, char *buff, size_t len);
 
 #endif
 
