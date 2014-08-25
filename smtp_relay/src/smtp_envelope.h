@@ -16,6 +16,7 @@ struct smtp_env
 	struct smtp_env_addr *from_head;
 	struct smtp_env_addr *from_tail;
 	char hostname[SMTP_ADDR_MAX];
+	int codeno;
 	FILE *file_data;
 };
 
