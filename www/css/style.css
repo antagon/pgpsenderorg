@@ -72,7 +72,8 @@ h3 {
 
 p {
 	margin:5px 0px 5px 0px;
-	padding:0px 5px 5px 3px;
+	/*padding:0px 5px 5px 3px;*/
+	padding:5px;
 	font-size:95%;
 	text-align:justify;
 }
@@ -102,10 +103,8 @@ input {
 	border-radius:2px;
 }
 
-
-
 input[type=checkbox] {
-	vertical-align:top;
+	vertical-align:middle;
 }
 
 button {
@@ -148,19 +147,18 @@ textarea {
 	margin:5px;
 	font-size:85%;
 	font-family:ProximaNovaRegular;
-	border:1px solid #BBBBBB;
+	border:1px solid #999;
 	resize:none;
 	-moz-border-radius:2px;
 	-webkit-border-radius:2px;
 	-khtml-border-radius:2px;
 	border-radius:2px;
-	background-color:#F3F3F2;
 	-webkit-box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
 }
 
-textarea:focus, input:focus {
+textarea:focus, select:focus, input:focus {
 	outline:0;
 	border:1px solid #4285F4;
 }
@@ -184,14 +182,12 @@ pre {
 	padding:5px;
 	font-size:85%;
 	font-family:Monospace;
-	white-space: pre-wrap;       /* css-3 */
-	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-	white-space: -pre-wrap;      /* Opera 4-6 */
-	white-space: -o-pre-wrap;    /* Opera 7 */
-	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	white-space:pre-wrap;       /* css-3 */
+	white-space:-moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space:-pre-wrap;      /* Opera 4-6 */
+	white-space:-o-pre-wrap;    /* Opera 7 */
+	word-wrap:break-word;       /* Internet Explorer 5.5+ */
 }
-
-
 
 label { cursor:pointer; }
 
@@ -236,5 +232,21 @@ label { cursor:pointer; }
 	display:table-cell;
 	vertical-align:middle;
 	padding:0px 5px 5px 5px;
+}
+
+::-webkit-input-placeholder {
+   color:#333;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color:#333;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color:#333;
+}
+
+:-ms-input-placeholder {
+   color:#333;
 }
 
