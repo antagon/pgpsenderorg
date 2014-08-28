@@ -128,6 +128,21 @@ function PGPSender ()
 		});
 	};
 
+	this.email_send = function (access_token, recipient, sender, subject, message, callback)
+	{
+		$.post ("/api/email_send.php", "access_token="+access_token+"&recipient="+recipient+"&sender="+sender+"&subject="+subject+"&message="+message, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");	
+			}
+
+			callback (data);
+		});
+	};
+
 	this.alias_add = function (api_key, alias, hostname, callback)
 	{
 		$.post ("/api/alias_add.php", "api_key="+api_key+"&alias="+alias+"&hostname="+hostname, function (response){
