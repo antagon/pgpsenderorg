@@ -112,6 +112,22 @@ function PGPSender ()
 		});
 	};
 
+	this.email_set_gpgkey = function (api_key, address, gpg_key, callback)
+	{
+		$.post ("/api/email_set_gpgkey.php", "api_key="+api_key+"&address="+address+"&gpg_key="+gpg_key, function (response){
+			var data = null;
+
+			try {
+				data = $.parseJSON (response);
+			} catch (e){
+				console.log ("JSON parser failed - invalid data!");
+				return;
+			}
+
+			callback (data);
+		});
+	};
+
 	this.alias_add = function (api_key, alias, hostname, callback)
 	{
 		$.post ("/api/alias_add.php", "api_key="+api_key+"&alias="+alias+"&hostname="+hostname, function (response){
