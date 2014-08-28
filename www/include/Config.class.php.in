@@ -7,10 +7,10 @@ class Config
 {
 	const VERSION = "@VERSION@";
 	const SQLITE3_DB_FILE = "@SQLITE3_DB_FILE@";
+	const MAILQUEUE_PATH = "@MAIL_QUEUE_PATH@";
 
 	// List of hostnames that are available for aliasing
 	public static $hostname = array ("pgpsender.org");
 };
 
 ?>
-
