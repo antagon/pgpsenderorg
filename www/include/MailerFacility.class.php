@@ -51,11 +51,11 @@ class MailerFacility
 		return true;
 	}
 
-	public function compose_raw ($to, $from, $subject, $body)
+	public function compose_raw ($to, $from, $from_name, $reply_to, $subject, $body)
 	{
 		$this->phpmailer->From = $from;
-		$this->phpmailer->FromName = "";
-		$this->phpmailer->addReplyTo ($from);
+		$this->phpmailer->FromName = $from_name;
+		$this->phpmailer->addReplyTo ($reply_to);
 		$this->phpmailer->addAddress ($to);
 		$this->phpmailer->Subject = $subject;
 		$this->phpmailer->Body = $body;

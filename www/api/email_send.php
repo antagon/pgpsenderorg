@@ -15,10 +15,10 @@ if ( ! isset ($_POST["access_token"]) )
 	ApiResponse::json_exit (ApiResponse::E_EMPTY, "Access token is empty");
 
 if ( ! isset ($_POST["subject"]) )
-	$_POST["subject"] = "";
+	$_POST["subject"] = "No subject";
 
-if ( ! isset ($_POST["message"]) )
-	$_POST["message"] = "";
+if ( ! isset ($_POST["message"]) || empty ($_POST["message"]) )
+	$_POST["message"] = " ";
 
 if ( ! isset ($_POST["pub_key"]) )
 	$_POST["pub_key"] = "";
@@ -45,7 +45,8 @@ if ( ! filter_var ($_POST["sender"], FILTER_VALIDATE_EMAIL) )
 
 $email_facility = new MailerFacility ();
 
-if ( ! $email_facility->compose_raw ($_POST["recipient"], $_POST["sender"], $_POST["subject"], $_POST["message"]) )
+if ( ! $email_facility->compose_raw ($_POST["recipient"], Config::$mailer["address"], Config::$mailer["name"],
+										$_POST["sender"], $_POST["subject"], $_POST["message"]) )
 	ApiResponse::json_exit (ApiResponse::E_INTERNAL);
 
 //
