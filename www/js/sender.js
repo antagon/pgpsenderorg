@@ -32,6 +32,7 @@ function show_preview ()
 
 	$("#email_form").hide ();
 	$("#email_paste_key").hide ();
+	$("#email_success").hide ();
 	$("#email_preview").show ();
 }
 
@@ -39,6 +40,7 @@ function show_form ()
 {
 	$("#email_preview").hide ();
 	$("#email_paste_key").hide ();
+	$("#email_success").hide ();
 	$("#email_form").show ();
 }
 
@@ -46,7 +48,25 @@ function show_public_key ()
 {
 	$("#email_preview").hide ();
 	$("#email_form").hide ();
+	$("#email_success").hide ();
 	$("#email_paste_key").show ();
+}
+
+function show_success ()
+{
+	$("#email_preview").hide ();
+	$("#email_form").hide ();
+	$("#email_paste_key").hide ();
+	$("#email_success").show ();
+}
+
+function show_failure ()
+{
+	$("#email_preview").hide ();
+	$("#email_form").hide ();
+	$("#email_paste_key").hide ();
+	$("#email_success").hide ();
+	$("#email_failure").show ();
 }
 
 function queue_email ()
@@ -60,11 +80,11 @@ function queue_email ()
 
 	pgpsender.email_send (access_token, recipient, sender, subject, body, function (data){
 		if ( data.status != 0 ){
-			// TODO: show alert;
+			show_failure ();
 			return;
 		}
 
-		show_form ();
+		show_success ();
 	});
 }
 
@@ -74,5 +94,7 @@ $(document).ready (function (){
 	$("[name=btn_email_preview_send]").click (queue_email);
 	$("[name=btn_email_paste_key]").click (show_public_key);
 	$("[name=btn_email_paste_key_ok]").click (show_form);
+	$("[name=btn_email_success_next]").click (function (){ location.reload (); });
+	$("[name=btn_email_failure_next]").click (queue_email);
 });
 

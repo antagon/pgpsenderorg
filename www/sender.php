@@ -43,7 +43,7 @@
 				<div>
 					<div> <strong>Subject</strong> </div>
 					<input type="text" name="in_email_subject" style="width:30%;">
-					<div style="float:right"> <button name="btn_email_preview"> Preview </button> </div>
+					<div style="float:right;"> <button name="btn_email_preview">Preview</button> </div>
 				</div>
 
 				<textarea name="in_email_body" rows="16"></textarea>
@@ -83,6 +83,21 @@
 				<div>
 					<textarea name="in_email_pk" rows="16"></textarea>
 				</div>
+			</div>
+
+			<div id="email_success" class="hidden">
+				<h2>Email sent!</h2>
+
+				<p>Your email was sent successfully. It may take a few minutes before being delivered.</p>
+
+				<button name="btn_email_success_next">Send another email</button>
+			</div>
+
+			<div id="email_failure" class="hidden">
+				<h2>Email NOT sent!</h2>
+
+				<p>Your email could not be sent, an internal error occured. Please, try it again later.
+				If this problem persists, please consider reporting it to us.</p>
 			</div>
 		</div>
 		
