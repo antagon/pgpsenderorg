@@ -9,8 +9,16 @@ class Config
 	const SQLITE3_DB_FILE = "@SQLITE3_DB_FILE@";
 	const MAILQUEUE_PATH = "@MAIL_QUEUE_PATH@";
 
-	// List of hostnames that are available for aliasing
+	// List of alias hostnames
 	public static $hostname = array ("pgpsender.org");
+
+	// This address is used as a sender.
+	// Its hostname should match the hostname of SMTP server that is used to deliver user's emails.
+	// It is discouraged to use sender's email address directly!
+	public static $mailer = array (
+		"address" => "mailer@pgpsender.org",
+		"name" => "PGPSender.org"
+	);
 };
 
 ?>
