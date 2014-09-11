@@ -64,7 +64,8 @@ parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 
 	fprintf (stderr, "HELO '%s' (len: %zu)\n", envelope->hostname, argv->len);
 
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_HELO;
 
 	return 1;
 }
@@ -89,6 +90,11 @@ parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
 
+	if ( (envelope->sequence & SMTP_C_HELO) == 0 ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
 	
@@ -98,7 +104,8 @@ parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	if ( smtp_env_add_recipient (envelope, buff) == NULL )
 		return 0;
 	
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_MAILFROM;
 
 	return 1;
 }
@@ -117,6 +124,12 @@ parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
 
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
 	
@@ -126,7 +139,8 @@ parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	if ( smtp_env_add_recipient (envelope, buff) == NULL )
 		return 0;
 
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_RCPTTO;
 
 	return 1;
 }
@@ -138,12 +152,20 @@ parser_on_data_cb (void *user_data)
 
 	envelope = (struct smtp_env*) user_data;
 
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0)
+			|| ((envelope->sequence & SMTP_C_RCPTTO) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	envelope->file_data = tmpfile ();
 
 	if ( envelope->file_data == NULL )
 		return 0;
 
-	envelope->codeno = 354;
+	envelope->codeno = SMTP_STARTMAIL;
+	envelope->sequence |= SMTP_C_DATA;
 
 	return 1;
 }
@@ -155,9 +177,17 @@ parser_on_eof_cb (void *user_data)
 
 	envelope = (struct smtp_env*) user_data;
 
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0)
+			|| ((envelope->sequence & SMTP_C_RCPTTO) == 0)
+			|| ((envelope->sequence & SMTP_C_DATA) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	smtp_env_free (envelope);
 
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
 
 	return 1;
 }
@@ -165,28 +195,51 @@ parser_on_eof_cb (void *user_data)
 static int
 parser_on_rset_cb (void *user_data)
 {
-	fprintf (stderr, "RSET\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	memset (envelope, 0, sizeof (struct smtp_env));
+
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_HELO;
+
 	return 1;
 }
 
 static int
 parser_on_vrfy_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "VRFY\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_ECMDNIMPL;
+
 	return 1;
 }
 
 static int
 parser_on_noop_cb (void *user_data)
 {
-	fprintf (stderr, "NOOP\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_MAILOK;
+
 	return 1;
 }
 
 static int
 parser_on_quit_cb (void *user_data)
 {
-	fprintf (stderr, "QUIT\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_BYE;
+
 	return 1;
 }
 
