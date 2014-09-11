@@ -16,7 +16,8 @@ enum
 	SMTP_C_RSET = 0x40,
 	SMTP_C_VRFY = 0x80,
 	SMTP_C_NOOP = 0x100,
-	SMTP_C_QUIT = 0x200
+	SMTP_C_QUIT = 0x200,
+	SMTP_C_UNKNOWN
 };
 
 enum
@@ -80,7 +81,6 @@ struct smtp_req
 
 struct smtp_parser
 {
-	struct parser parser;
 	void *user_data;
 	int (*on_helo) (struct smtp_req_arg *argv, size_t argc, void *user_data);
 	int (*on_ehlo) (struct smtp_req_arg *argv, size_t argc, void *user_data);
@@ -92,6 +92,8 @@ struct smtp_parser
 	int (*on_vrfy) (struct smtp_req_arg *argv, size_t argc, void *user_data);
 	int (*on_noop) (void *user_data);
 	int (*on_quit) (void *user_data);
+	int (*on_unknown) (void *user_data);
+	struct parser parser;
 	struct smtp_req request;
 };
 

@@ -6,6 +6,7 @@
 #include <syslog.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sqlite3.h>
 #include <unistd.h>
 
 #include "smtpd.h"
@@ -49,12 +50,13 @@ parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	struct smtp_env *envelope;
 	size_t copy_len;
 
-	if ( argc < 1 ){
-		return 1;
-	}
-
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
+
+	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
+		return 1;
+	}
 
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
@@ -83,12 +85,13 @@ parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	char buff[SMTP_ADDR_MAX];
 	size_t copy_len;
 
-	if ( argc < 1 ){
-		return 1;
-	}
-
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
+
+	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
+		return 1;
+	}
 
 	if ( (envelope->sequence & SMTP_C_HELO) == 0 ){
 		envelope->codeno = SMTP_EBADSEQ;
@@ -117,12 +120,13 @@ parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	char buff[SMTP_ADDR_MAX];
 	size_t copy_len;
 
-	if ( argc < 1 ){
-		return 1;
-	}
-
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
+
+	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
+		return 1;
+	}
 
 	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
 			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0) ){
@@ -185,7 +189,7 @@ parser_on_eof_cb (void *user_data)
 		return 1;
 	}
 
-	smtp_env_free (envelope);
+	fclose (envelope->file_data);
 
 	envelope->codeno = SMTP_MAILOK;
 
@@ -199,7 +203,7 @@ parser_on_rset_cb (void *user_data)
 
 	envelope = (struct smtp_env*) user_data;
 
-	memset (envelope, 0, sizeof (struct smtp_env));
+	smtp_env_free (envelope);
 
 	envelope->codeno = SMTP_MAILOK;
 	envelope->sequence |= SMTP_C_HELO;
@@ -239,6 +243,18 @@ parser_on_quit_cb (void *user_data)
 	envelope = (struct smtp_env*) user_data;
 
 	envelope->codeno = SMTP_BYE;
+
+	return 1;
+}
+
+static int
+parser_on_unknown_cb (void *user_data)
+{
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_ESYNTAX;
 
 	return 1;
 }
@@ -296,6 +312,7 @@ main (int argc, char *argv[])
 	parser.on_vrfy = parser_on_vrfy_cb;
 	parser.on_noop = parser_on_noop_cb;
 	parser.on_quit = parser_on_quit_cb;
+	parser.on_unknown = parser_on_unknown_cb;
 
 	smtp_parser_init (&parser);
 
@@ -346,7 +363,7 @@ main (int argc, char *argv[])
 			continue;
 		}
 
-		log_info ("New connection accepted for %s:%u", smtpd_client.address, smtpd_client.port);
+		log_info ("New connection accepted from %s:%u", smtpd_client.address, smtpd_client.port);
 
 		pid = fork ();
 
