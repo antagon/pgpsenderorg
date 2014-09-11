@@ -10,6 +10,7 @@
 
 #include "smtpd.h"
 #include "smtp_parser.h"
+#include "smtp_envelope.h"
 #include "log.h"
 
 #define SMTPD_HOST "0.0.0.0"
@@ -45,45 +46,120 @@ sigchld_handler (int signo)
 static int
 parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "HELO\n");
+	struct smtp_env *envelope;
+	size_t copy_len;
+
+	if ( argc < 1 ){
+		return 1;
+	}
+
+	envelope = (struct smtp_env*) user_data;
+	copy_len = argv->len;
+
+	if ( argv->len > SMTP_ADDR_MAX )
+		copy_len = SMTP_ADDR_MAX - 1;
+
+	strncpy (envelope->hostname, argv->val, copy_len);
+	envelope->hostname[copy_len] = '\0';
+
+	fprintf (stderr, "HELO '%s' (len: %zu)\n", envelope->hostname, argv->len);
+
+	envelope->codeno = 250;
+
 	return 1;
 }
 
 static int
 parser_on_ehlo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "EHLO\n");
-	return 1;
+	return parser_on_helo_cb (argv, argc, user_data);
 }
 
 static int
 parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "MAIL\n");
+	struct smtp_env *envelope;
+	char buff[SMTP_ADDR_MAX];
+	size_t copy_len;
+
+	if ( argc < 1 ){
+		return 1;
+	}
+
+	envelope = (struct smtp_env*) user_data;
+	copy_len = argv->len;
+
+	if ( argv->len > SMTP_ADDR_MAX )
+		copy_len = SMTP_ADDR_MAX - 1;
+	
+	strncpy (buff, argv->val, copy_len);
+	buff[copy_len] = '\0';
+
+	if ( smtp_env_add_recipient (envelope, buff) == NULL )
+		return 0;
+	
+	envelope->codeno = 250;
+
 	return 1;
 }
 
 static int
 parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "RCPT\n");
-	return 1;
+	struct smtp_env *envelope;
+	char buff[SMTP_ADDR_MAX];
+	size_t copy_len;
 
+	if ( argc < 1 ){
+		return 1;
+	}
+
+	envelope = (struct smtp_env*) user_data;
+	copy_len = argv->len;
+
+	if ( argv->len > SMTP_ADDR_MAX )
+		copy_len = SMTP_ADDR_MAX - 1;
+	
+	strncpy (buff, argv->val, copy_len);
+	buff[copy_len] = '\0';
+
+	if ( smtp_env_add_recipient (envelope, buff) == NULL )
+		return 0;
+
+	envelope->codeno = 250;
+
+	return 1;
 }
 
 static int
 parser_on_data_cb (void *user_data)
 {
-	fprintf (stderr, "DATA\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->file_data = tmpfile ();
+
+	if ( envelope->file_data == NULL )
+		return 0;
+
+	envelope->codeno = 354;
+
 	return 1;
 }
 
 static int
 parser_on_eof_cb (void *user_data)
 {
-	fprintf (stderr, "EOF\n");
-	return 1;
+	struct smtp_env *envelope;
 
+	envelope = (struct smtp_env*) user_data;
+
+	smtp_env_free (envelope);
+
+	envelope->codeno = 250;
+
+	return 1;
 }
 
 static int
@@ -118,8 +194,9 @@ int
 main (int argc, char *argv[])
 {
 	smtpd_t smtpd;
-	struct smtp_parser parser;
 	struct smtpd_config smtpd_config;
+	struct smtp_parser parser;
+	struct smtp_env envelope;
 	struct sigaction sa;
 	int rval;
 
@@ -152,7 +229,10 @@ main (int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
+	smtp_env_init (&envelope);
+
 	// Configure smtp parser
+	parser.user_data = &envelope;
 	parser.on_helo = parser_on_helo_cb;
 	parser.on_ehlo = parser_on_ehlo_cb;
 	parser.on_mail = parser_on_mail_cb;
@@ -261,7 +341,6 @@ main (int argc, char *argv[])
 			recv_len = recv (smtpd_client.sock, msg_buff, sizeof (msg_buff), 0);
 
 			if ( recv_len <= 0 ){
-
 				if ( errno ){
 					log_error ("Cannot receive data from connected client: %s", strerror (errno));
 					smtpd_client_close (&smtpd_client);
@@ -277,7 +356,34 @@ main (int argc, char *argv[])
 
 			// Parser loop
 			do {
-				parsed_len += smtp_parser_exec (&parser, (const char*)  msg_buff, recv_len);
+				char res_buff[256];
+				ssize_t send_len;
+				
+				parsed_len += smtp_parser_exec (&parser, (const char*) msg_buff, recv_len);
+
+				if ( smtp_strresponse (envelope.codeno, res_buff, sizeof (res_buff)) == -1 ){
+					log_error ("Unknown SMTP code %d, connection closed", envelope.codeno);
+					smtpd_client_close (&smtpd_client);
+					smtpd_close (&smtpd);
+					return EXIT_FAILURE;
+				}
+
+				send_len = send (smtpd_client.sock, res_buff, strlen (res_buff), 0);
+
+				if ( send_len <= 0 ){
+					if ( errno ){
+						log_error ("Cannot receive data from connected client: %s", strerror (errno));
+						smtpd_client_close (&smtpd_client);
+						smtpd_close (&smtpd);
+						return EXIT_FAILURE;
+					}
+
+					log_info ("Connection closed.");
+					smtpd_client_close (&smtpd_client);
+					smtpd_close (&smtpd);
+					return EXIT_SUCCESS;
+				}
+
 			} while ( parsed_len != recv_len );
 		}
 	}
