@@ -31,22 +31,22 @@
 				<div>
 					<div> <strong>Recipient</strong> <span id="alert_recipient" class="hidden"></span> </div>
 					<div>
-						<input type="text" name="in_email_recipient" placeholder="m.brod@example.com"> <button name="btn_email_paste_key" title="Paste public key"> <span class="fa fa-lock"></span> </button>
+						<input type="text" name="in_email_recipient" tabindex="1" placeholder="m.brod@example.com"> <button name="btn_email_paste_key" title="Paste public key"> <span class="fa fa-lock"></span> </button>
 					</div>
 
 					<div> <strong>Sender</strong> <span id="alert_sender" class="hidden"></span> </div>
 					<div>
-						<input type="text" name="in_email_sender" placeholder="f.kafka@example.com">
+						<input type="text" name="in_email_sender" tabindex="2" placeholder="f.kafka@example.com">
 					</div>
 				</div>
 
 				<div>
 					<div> <strong>Subject</strong> </div>
-					<input type="text" name="in_email_subject" style="width:30%;">
+					<input type="text" name="in_email_subject" tabindex="3" style="width:30%;">
 					<div style="float:right;"> <button name="btn_email_preview">Preview</button> </div>
 				</div>
 
-				<textarea name="in_email_body" rows="16"></textarea>
+				<textarea name="in_email_body" tabindex="4" rows="16"></textarea>
 
 				<input type="hidden" name="access_token" value="<?php echo $_SESSION["access_token"];  ?>">
 			</div>
