@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <errno.h>
 #include <signal.h>
 #include <syslog.h>
+#include <getopt.h>
+#include <sqlite3.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -18,10 +21,16 @@
 #define CONNECTIONS_MAX 32
 #define CONNECTION_TIMEOUT 60
 
-#define QUEUE_DIR "./queue"
+struct config
+{
+	uint16_t port;
+	char *sqlite_db_path;
+	char *mail_queue_path;
+};
 
 static volatile int daemon_loop = 1;
 static int connections_cnt = 0;
+static sqlite3 *sqlite;
 
 static void
 sigdie_handler (int signo)
@@ -40,6 +49,16 @@ sigchld_handler (int signo)
 	}
 }
 
+static void
+print_usage (const char *p)
+{
+	fprintf (stderr, "Usage: %s -d <DIR> -f <FILE> [-p <PORT>]\n\nOptions:\n\
+  -d <DIR> mail queue directory path\n\
+  -f <FILE> sqlite database file\n\
+  -p <PORT> listening TCP port\n\
+  -h show usage\n", p);
+}
+
 //
 // Callbacks for smtp parser
 //
@@ -49,12 +68,13 @@ parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	struct smtp_env *envelope;
 	size_t copy_len;
 
-	if ( argc < 1 ){
-		return 1;
-	}
-
 	envelope = (struct smtp_env*) user_data;
 	copy_len = argv->len;
+
+	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
+		return 1;
+	}
 
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
@@ -62,9 +82,8 @@ parser_on_helo_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	strncpy (envelope->hostname, argv->val, copy_len);
 	envelope->hostname[copy_len] = '\0';
 
-	fprintf (stderr, "HELO '%s' (len: %zu)\n", envelope->hostname, argv->len);
-
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_HELO;
 
 	return 1;
 }
@@ -82,12 +101,18 @@ parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	char buff[SMTP_ADDR_MAX];
 	size_t copy_len;
 
+	envelope = (struct smtp_env*) user_data;
+	copy_len = argv->len;
+
 	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
 		return 1;
 	}
 
-	envelope = (struct smtp_env*) user_data;
-	copy_len = argv->len;
+	if ( (envelope->sequence & SMTP_C_HELO) == 0 ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
 
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
@@ -98,7 +123,8 @@ parser_on_mail_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	if ( smtp_env_add_recipient (envelope, buff) == NULL )
 		return 0;
 	
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_MAILFROM;
 
 	return 1;
 }
@@ -110,12 +136,19 @@ parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	char buff[SMTP_ADDR_MAX];
 	size_t copy_len;
 
+	envelope = (struct smtp_env*) user_data;
+	copy_len = argv->len;
+
 	if ( argc < 1 ){
+		envelope->codeno = SMTP_EARGSYNTAX;
 		return 1;
 	}
 
-	envelope = (struct smtp_env*) user_data;
-	copy_len = argv->len;
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
 
 	if ( argv->len > SMTP_ADDR_MAX )
 		copy_len = SMTP_ADDR_MAX - 1;
@@ -126,7 +159,8 @@ parser_on_rcpt_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 	if ( smtp_env_add_recipient (envelope, buff) == NULL )
 		return 0;
 
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_RCPTTO;
 
 	return 1;
 }
@@ -138,12 +172,20 @@ parser_on_data_cb (void *user_data)
 
 	envelope = (struct smtp_env*) user_data;
 
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0)
+			|| ((envelope->sequence & SMTP_C_RCPTTO) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	envelope->file_data = tmpfile ();
 
 	if ( envelope->file_data == NULL )
 		return 0;
 
-	envelope->codeno = 354;
+	envelope->codeno = SMTP_STARTMAIL;
+	envelope->sequence |= SMTP_C_DATA;
 
 	return 1;
 }
@@ -155,9 +197,17 @@ parser_on_eof_cb (void *user_data)
 
 	envelope = (struct smtp_env*) user_data;
 
+	if ( ((envelope->sequence & SMTP_C_HELO) == 0)
+			|| ((envelope->sequence & SMTP_C_MAILFROM) == 0)
+			|| ((envelope->sequence & SMTP_C_RCPTTO) == 0)
+			|| ((envelope->sequence & SMTP_C_DATA) == 0) ){
+		envelope->codeno = SMTP_EBADSEQ;
+		return 1;
+	}
+
 	smtp_env_free (envelope);
 
-	envelope->codeno = 250;
+	envelope->codeno = SMTP_MAILOK;
 
 	return 1;
 }
@@ -165,28 +215,63 @@ parser_on_eof_cb (void *user_data)
 static int
 parser_on_rset_cb (void *user_data)
 {
-	fprintf (stderr, "RSET\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	smtp_env_free (envelope);
+
+	envelope->codeno = SMTP_MAILOK;
+	envelope->sequence |= SMTP_C_HELO;
+
 	return 1;
 }
 
 static int
 parser_on_vrfy_cb (struct smtp_req_arg *argv, size_t argc, void *user_data)
 {
-	fprintf (stderr, "VRFY\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_ECMDNIMPL;
+
 	return 1;
 }
 
 static int
 parser_on_noop_cb (void *user_data)
 {
-	fprintf (stderr, "NOOP\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_MAILOK;
+
 	return 1;
 }
 
 static int
 parser_on_quit_cb (void *user_data)
 {
-	fprintf (stderr, "QUIT\n");
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_BYE;
+
+	return 1;
+}
+
+static int
+parser_on_unknown_cb (void *user_data)
+{
+	struct smtp_env *envelope;
+
+	envelope = (struct smtp_env*) user_data;
+
+	envelope->codeno = SMTP_ESYNTAX;
+
 	return 1;
 }
 
@@ -197,8 +282,45 @@ main (int argc, char *argv[])
 	struct smtpd_config smtpd_config;
 	struct smtp_parser parser;
 	struct smtp_env envelope;
+	struct config config;
 	struct sigaction sa;
 	int rval;
+
+	memset (&config, 0, sizeof (struct config));
+
+	while ( (rval = getopt (argc, argv, "d:f:p:h")) != -1 ){
+
+		switch ( rval ){
+			case 'd':
+				config.mail_queue_path = strdup (optarg);
+				break;
+			case 'f':
+				config.sqlite_db_path = strdup (optarg);
+				break;
+			case 'p':
+				config.port = strtoll (optarg, NULL, 10);
+				break;
+			case 'h':
+				print_usage (argv[0]);
+				return EXIT_SUCCESS;
+			default:
+				print_usage (argv[0]);
+				return EXIT_FAILURE;
+		}
+	}
+
+	if ( config.mail_queue_path == NULL ){
+		print_usage (argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	if ( config.sqlite_db_path == NULL ){
+		print_usage (argv[0]);	
+		return EXIT_FAILURE;
+	}
+
+	if ( config.port == 0 )
+		config.port = SMTPD_PORT;
 
 	openlog ("smtpd", LOG_PID | LOG_PERROR, LOG_USER);
 
@@ -229,8 +351,6 @@ main (int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	smtp_env_init (&envelope);
-
 	// Configure smtp parser
 	parser.user_data = &envelope;
 	parser.on_helo = parser_on_helo_cb;
@@ -243,12 +363,13 @@ main (int argc, char *argv[])
 	parser.on_vrfy = parser_on_vrfy_cb;
 	parser.on_noop = parser_on_noop_cb;
 	parser.on_quit = parser_on_quit_cb;
+	parser.on_unknown = parser_on_unknown_cb;
 
 	smtp_parser_init (&parser);
 
 	// Configure smtpd
 	smtpd_config.address = SMTPD_HOST;
-	smtpd_config.port = SMTPD_PORT;
+	smtpd_config.port = config.port;
 
 	rval = smtpd_open (&smtpd);
 
@@ -262,6 +383,18 @@ main (int argc, char *argv[])
 	if ( rval != 0 ){
 		log_error ("Cannot start listening on %s:%u: %s", smtpd_config.address,
 															smtpd_config.port, strerror (errno));
+		smtpd_close (&smtpd);
+		return EXIT_FAILURE;
+	}
+
+	// Initialize envelope
+	smtp_env_init (&envelope);
+
+	// Open sqlite database
+	rval = sqlite3_open (config.sqlite_db_path, &sqlite);
+
+	if ( rval != SQLITE_OK ){
+		log_error ("Cannot open sqlite3 database in file '%s'", "TODO");
 		smtpd_close (&smtpd);
 		return EXIT_FAILURE;
 	}
@@ -293,7 +426,7 @@ main (int argc, char *argv[])
 			continue;
 		}
 
-		log_info ("New connection accepted for %s:%u", smtpd_client.address, smtpd_client.port);
+		log_info ("New connection accepted from %s:%u", smtpd_client.address, smtpd_client.port);
 
 		pid = fork ();
 
@@ -390,7 +523,11 @@ main (int argc, char *argv[])
 
 	log_info ("Daemon killed.");
 
+	sqlite3_close (sqlite);
 	smtpd_close (&smtpd);
+
+	free (config.mail_queue_path);
+	free (config.sqlite_db_path);
 
 	return EXIT_SUCCESS;;
 }

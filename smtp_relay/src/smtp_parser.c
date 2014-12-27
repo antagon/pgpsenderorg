@@ -38,6 +38,8 @@ _parser_on_word_cb (struct parser *parser, const char *buff, size_t len)
 			request->type = SMTP_C_NOOP;
 		else if ( CMD_MATCHES (buff, "QUIT", len) )
 			request->type = SMTP_C_QUIT;
+		else
+			request->type = SMTP_C_UNKNOWN;
 
 		return 1;
 	}
@@ -145,6 +147,9 @@ smtp_parser_exec (struct smtp_parser *smtp_parser, const char *buff, size_t len)
 				break;
 			case SMTP_C_QUIT:
 				rval = smtp_parser->on_quit (smtp_parser->user_data);
+				break;
+			case SMTP_C_UNKNOWN:
+				rval = smtp_parser->on_unknown (smtp_parser->user_data);
 				break;
 		}
 	}
